@@ -14,3 +14,18 @@ a {
 * {
   box-sizing: border-box;
 }
+
+html,
+body {
+  font-size: 10px;
+  background-color: rgb(19, 27, 51);
+  color: #eee
+}
+
+.wallet-adapter-modal-list-more {
+  color: #eee
+}
+.wallet-adapter-button-trigger {
+  background-color: #fbae21 !important;
+  color: black !important
+}
