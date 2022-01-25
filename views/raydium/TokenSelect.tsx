@@ -1,5 +1,4 @@
 import { FunctionComponent } from "react";
-import Image from "next/image";
 import { ArrowDownIcon } from "@chakra-ui/icons";
 import { AccountInfo, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -41,7 +40,7 @@ const TokenSelect: FunctionComponent<TokenSelectProps> = props => {
     if (selectTokenProps.propsData.tokenData.tokenInfo?.symbol) {
       return (
         <>
-          <Image
+          <img
             src={selectTokenProps.propsData.tokenData.tokenInfo?.logoURI}
             alt="logo"
             className={style.img}

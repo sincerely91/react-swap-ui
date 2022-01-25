@@ -1,5 +1,4 @@
 import { FunctionComponent, useEffect, useRef, useState } from "react";
-import Image from 'next/image';
 import { CloseIcon } from "@chakra-ui/icons";
 import SPLTokenRegistrySource from "../../utils/tokenList";
 import { TOKENS } from "../../utils/tokens";
@@ -64,7 +63,10 @@ const TokenList: FunctionComponent<TokenListProps> = props => {
           key={item.address}
           onClick={() => setTokenInfo(item)}
         >
-          <Image src={item.logoURI} alt="" className={style.tokenLogo} />
+          <img
+            src={item.logoURI}
+            alt=""
+            className={style.tokenLogo} />
           <div>{item.symbol}</div>
         </div>
       );

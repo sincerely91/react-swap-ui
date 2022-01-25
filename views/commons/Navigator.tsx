@@ -1,6 +1,5 @@
 import { FunctionComponent } from "react";
 import Link from "next/link";
-import Image from "next/image"
 import {
   WalletModalProvider,
   WalletDisconnectButton,
@@ -15,7 +14,7 @@ const Navigator: FunctionComponent = () => {
     <div className={style.sidebar}>
       <div className={style.routesBlock}>
         <Link href="/" passHref>
-          <Image
+          <img
             src="https://dappio.xyz/_nuxt/img/logo_v4.eb14d4f.png"
             alt=""
             className={style.dappioLogo}
