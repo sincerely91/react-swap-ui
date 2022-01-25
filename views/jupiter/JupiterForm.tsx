@@ -91,12 +91,31 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = props => {
     });
   };
 
-  let inputList = getSymbolByMint(allTokenMints).sort((a: any, b: any) =>
-    a.symbol < b.symbol ? -1 : a.symbol > b.symbol ? 1 : 0
-  );
-  let outputList = getSymbolByMint(validOutputMints).sort((a: any, b: any) =>
-    a.symbol < b.symbol ? -1 : a.symbol > b.symbol ? 1 : 0
-  );
+  const specificTokenOnly = (tokenList: IToken[]): (IToken | undefined)[] => {
+    return tokenList.map((t: IToken) => {
+      if (
+        t.mint === "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB" ||
+        t.mint === "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v" ||
+        t.mint === "So11111111111111111111111111111111111111112" ||
+        t.mint === "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R" ||
+        t.mint === "SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt"
+      ) {
+        return t;
+      }
+    });
+  };
+
+  let inputList: IToken[] = specificTokenOnly(
+    getSymbolByMint(allTokenMints).sort((a: any, b: any) =>
+      a.symbol < b.symbol ? -1 : a.symbol > b.symbol ? 1 : 0
+    )
+  ).filter(t => t !== undefined) as IToken[];
+
+  let outputList = specificTokenOnly(
+    getSymbolByMint(validOutputMints).sort((a: any, b: any) =>
+      a.symbol < b.symbol ? -1 : a.symbol > b.symbol ? 1 : 0
+    )
+  ).filter(t => t !== undefined) as IToken[];
 
   useEffect(() => {
     if (!wallet.connected) {
