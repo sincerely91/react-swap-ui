@@ -13,8 +13,9 @@ interface NotifyProps {
     status: AlertStatus;
     title: string;
     description: string;
+    link: string;
   };
-};
+}
 
 const Notify: FunctionComponent<NotifyProps> = props => {
   return (
@@ -26,6 +27,16 @@ const Notify: FunctionComponent<NotifyProps> = props => {
       <AlertDescription className={style.notifyDescription}>
         {props.message.description}
       </AlertDescription>
+      {props.message.link ? (
+        <a
+          href={props.message.link}
+          style={{ color: "#fbae21", textDecoration: "underline" }}
+        >
+          Check Explorer
+        </a>
+      ) : (
+        ""
+      )}
     </Alert>
   );
 };

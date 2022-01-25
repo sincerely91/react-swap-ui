@@ -313,6 +313,12 @@ export async function createAmmAuthority(programId: PublicKey) {
   );
 }
 
+export interface ISplToken {
+  pubkey: string;
+  parsedInfo: any;
+  amount: number;
+}
+
 export const getSPLTokenData = async (
   wallet: WalletContextState,
   connection: Connection

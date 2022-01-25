@@ -1,8 +1,9 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 import { ArrowDownIcon } from "@chakra-ui/icons";
 import { AccountInfo, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { TokenData } from "./index";
+import { ISplToken } from "../../utils/web3";
 import style from "../../styles/swap.module.sass";
 
 interface TokenSelectProps {
@@ -12,16 +13,18 @@ interface TokenSelectProps {
   updateAmount: Function;
   accountInfo: AccountInfo<Uint8Array>;
   wallet: Object;
-};
+  splTokenData: ISplToken[];
+}
 
 interface SelectTokenProps {
   propsData: {
     tokenData: TokenData;
   };
-};
+}
 
 const TokenSelect: FunctionComponent<TokenSelectProps> = props => {
   let wallet = useWallet();
+  const [tokenBalance, setTokenBalance] = useState<number | null>(null);
   const updateAmount = (e: any) => {
     e.preventDefault();
 
@@ -36,7 +39,24 @@ const TokenSelect: FunctionComponent<TokenSelectProps> = props => {
     props.toggleTokenList(props.type);
   };
 
-  const SelectTokenBtn: FunctionComponent<SelectTokenProps> = selectTokenProps => {
+  useEffect(() => {
+    const getTokenBalance = () => {
+      let data: ISplToken | undefined = props.splTokenData.find(
+        (t: ISplToken) =>
+          t.parsedInfo.mint === props.tokenData.tokenInfo?.mintAddress
+      );
+
+      if (data) {
+        //@ts-ignore
+        setTokenBalance(data.amount);
+      }
+    };
+    getTokenBalance();
+  }, [props.tokenData.tokenInfo]);
+
+  const SelectTokenBtn: FunctionComponent<
+    SelectTokenProps
+  > = selectTokenProps => {
     if (selectTokenProps.propsData.tokenData.tokenInfo?.symbol) {
       return (
         <>
@@ -69,6 +89,9 @@ const TokenSelect: FunctionComponent<TokenSelectProps> = props => {
           {props.type === "To" ? `${props.type} (Estimate)` : props.type}
         </div>
         <div>
+          {wallet.connected && tokenBalance
+            ? `Balance: ${tokenBalance.toFixed(4)}`
+            : ""}
           {wallet.connected && props.tokenData.tokenInfo?.symbol === "SOL"
             ? `Balance: ${(props?.accountInfo?.lamports > 0
                 ? props?.accountInfo?.lamports / LAMPORTS_PER_SOL

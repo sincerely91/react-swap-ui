@@ -9,6 +9,7 @@ import {
 } from "@solana/wallet-adapter-react-ui";
 import { TokenData } from "./index";
 import TokenSelect from "./TokenSelect";
+import { ISplToken } from "../../utils/web3";
 import style from "../../styles/swap.module.sass";
 
 interface SwapOperateContainerProps {
@@ -20,15 +21,18 @@ interface SwapOperateContainerProps {
   slippageValue: number;
   accountInfo: AccountInfo<Uint8Array>;
   sendSwapTransaction: (event?: React.MouseEvent<HTMLButtonElement>) => void;
-};
+  splTokenData: ISplToken[];
+}
 
 interface SwapDetailProps {
   title: string;
   tooltipContent: string;
   value: string;
-};
+}
 
-const SwapOperateContainer: FunctionComponent<SwapOperateContainerProps> = props => {
+const SwapOperateContainer: FunctionComponent<
+  SwapOperateContainerProps
+> = props => {
   let wallet = useWallet();
   const SwapBtn = (swapProps: any) => {
     if (wallet.connected) {
@@ -129,6 +133,7 @@ const SwapOperateContainer: FunctionComponent<SwapOperateContainerProps> = props
           updateAmount={props.updateAmount}
           accountInfo={props.accountInfo}
           wallet={wallet}
+          splTokenData={props.splTokenData}
         />
         <div
           className={`${style.switchIcon} ${style.icon}`}
@@ -143,6 +148,7 @@ const SwapOperateContainer: FunctionComponent<SwapOperateContainerProps> = props
           updateAmount={props.updateAmount}
           accountInfo={props.accountInfo}
           wallet={wallet}
+          splTokenData={props.splTokenData}
         />
         <div className={style.slippageRow}>
           <div className={style.slippageTooltipBlock}>

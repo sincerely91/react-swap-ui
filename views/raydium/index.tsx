@@ -5,13 +5,12 @@ import SwapOperateContainer from "./SwapOperateContainer";
 import { PublicKey } from "@solana/web3.js";
 import { Spinner } from "@chakra-ui/react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
-import { TOKENS } from "../../utils/tokens";
-import { TOKEN_PROGRAM_ID } from "../../utils/ids";
 import { getPoolByTokenMintAddresses } from "../../utils/pools";
 import { swap, getSwapOutAmount, setupPools } from "../../utils/swap";
 import { getSPLTokenData } from "../../utils/web3";
 import Notify from "../commons/Notify";
 import SPLToken from "../commons/SPLToken";
+import { ISplToken } from "../../utils/web3";
 import style from "../../styles/swap.module.sass";
 export interface TokenData {
   amount: number;
@@ -34,7 +33,7 @@ const SwapPage: FunctionComponent = () => {
   const [toData, setToData] = useState<TokenData>({} as TokenData);
   const [slippageValue, setSlippageValue] = useState(1);
   const [accountInfo, setAccountInfo] = useState<any>("");
-  const [splTokenData, setSplTokenData] = useState<any>([]);
+  const [splTokenData, setSplTokenData] = useState<ISplToken[]>([]);
   const [liquidityPools, setLiquidityPools] = useState<any>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [notify, setNotify] = useState<any>({
@@ -58,16 +57,16 @@ const SwapPage: FunctionComponent = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const getAccountInfo = async () => {
-      if (!wallet.connected) {
-        return;
-      }
-      let key = await wallet.publicKey?.toBase58();
-      let data = await connection.getAccountInfo(new PublicKey(key));
-      setAccountInfo(data);
-    };
+  const getAccountInfo = async () => {
+    if (!wallet.connected) {
+      return;
+    }
+    let key = await wallet.publicKey?.toBase58();
+    let data = await connection.getAccountInfo(new PublicKey(key));
+    setAccountInfo(data);
+  };
 
+  useEffect(() => {
     getAccountInfo();
     getSPLTokenData(wallet, connection).then((tokenList: any) => {
       if (tokenList) {
@@ -210,7 +209,7 @@ const SwapPage: FunctionComponent = () => {
       toData.tokenInfo.mintAddress
     );
 
-    let fromTokenAccount = splTokenData.find(
+    let fromTokenAccount: ISplToken | undefined | string = splTokenData.find(
       (token: any) => token.parsedInfo.mint === fromData.tokenInfo.mintAddress
     );
     if (fromTokenAccount) {
@@ -219,7 +218,7 @@ const SwapPage: FunctionComponent = () => {
       fromTokenAccount = "";
     }
 
-    let toTokenAccount = splTokenData.find(
+    let toTokenAccount: ISplToken | undefined | string = splTokenData.find(
       (token: any) => token.parsedInfo.mint === toData.tokenInfo.mintAddress
     );
     if (toTokenAccount) {
@@ -228,7 +227,7 @@ const SwapPage: FunctionComponent = () => {
       toTokenAccount = "";
     }
 
-    let wsol = splTokenData.find(
+    let wsol: any = splTokenData.find(
       (token: any) =>
         token.mint === "So11111111111111111111111111111111111111112"
     );
@@ -254,23 +253,28 @@ const SwapPage: FunctionComponent = () => {
       toData.amount.toString(),
       wsol
     ).then(res => {
-      // let result = await connection.confirmTransaction(res);
-      // console.log(result, "/////");
       toggleNotify(true);
-
       setNotify((old: any) => ({
         ...old,
         status: "success",
         title: "Transaction Send",
-        description: `Tx id: ${res}`
+        description: "",
+        link: `https://explorer.solana.com/address/${res}`
       }));
+
+      getSPLTokenData(wallet, connection).then((tokenList: any) => {
+        if (tokenList) {
+          setSplTokenData(() => tokenList.filter((t: any) => t !== undefined));
+        }
+      });
+      getAccountInfo();
     });
   };
 
   useEffect(() => {
     const time = setTimeout(() => {
       toggleNotify(false);
-    }, 5000);
+    }, 8000);
 
     return () => clearTimeout(time);
   }, [notify]);
@@ -333,6 +337,7 @@ const SwapPage: FunctionComponent = () => {
             slippageValue={slippageValue}
             accountInfo={accountInfo}
             sendSwapTransaction={sendSwapTransaction}
+            splTokenData={splTokenData}
           />
         )}
       </div>
