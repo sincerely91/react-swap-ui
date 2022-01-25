@@ -51,6 +51,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = props => {
       ...formValue,
       amount: amountInDecimal
     });
+
   const validOutputMints = useMemo(() => {
     return routeMap.get(formValue.inputMint?.toBase58() || "") || allTokenMints;
   }, [routeMap, formValue.inputMint?.toBase58()]);
@@ -72,6 +73,28 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = props => {
     }
   }, [formValue.inputMint?.toBase58(), formValue.outputMint?.toBase58()]);
 
+  interface IToken {
+    mint: string;
+    symbol: string;
+  }
+  const getSymbolByMint = (mintList: string[]) => {
+    return mintList.map(t => {
+      let tokenInfo: IToken = {
+        mint: "",
+        symbol: ""
+      };
+      tokenInfo["mint"] = t;
+      tokenInfo["symbol"] = tokenMap.get(t)?.name || "unknown";
+      return tokenInfo;
+    });
+  };
+
+  let inputList = getSymbolByMint(allTokenMints).sort((a: any, b: any) =>
+    a.symbol < b.symbol ? -1 : a.symbol > b.symbol ? 1 : 0
+  );
+  let outputList = getSymbolByMint(validOutputMints).sort((a: any, b: any) =>
+    a.symbol < b.symbol ? -1 : a.symbol > b.symbol ? 1 : 0
+  );
   return (
     <div>
       <div>
@@ -90,10 +113,10 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = props => {
             }
           }}
         >
-          {allTokenMints.map(tokenMint => {
+          {inputList.map((t: IToken) => {
             return (
-              <option key={tokenMint} value={tokenMint}>
-                {tokenMap.get(tokenMint)?.name || "unknown"}
+              <option key={t.mint} value={t.mint}>
+                {t.symbol}
               </option>
             );
           })}
@@ -116,10 +139,10 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = props => {
             }
           }}
         >
-          {validOutputMints.map(tokenMint => {
+          {outputList.map((t: IToken) => {
             return (
-              <option key={tokenMint} value={tokenMint}>
-                {tokenMap.get(tokenMint)?.name || "unknown"}
+              <option key={t.mint} value={t.mint}>
+                {t.symbol}
               </option>
             );
           })}

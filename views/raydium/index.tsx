@@ -9,6 +9,8 @@ import { TOKEN_PROGRAM_ID } from "../../utils/ids";
 import { getPoolByTokenMintAddresses } from "../../utils/pools";
 import { swap, getSwapOutAmount, setupPools } from "../../utils/swap";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import Notify from "../commons/Notify";
+import { Spinner } from "@chakra-ui/react";
 
 const SwapPage = (): JSX.Element => {
   const [showTokenList, setShowTokenList] = useState(false);
@@ -21,6 +23,13 @@ const SwapPage = (): JSX.Element => {
   const [splTokenData, setSplTokenData] = useState<any>([]);
   const [liquidityPools, setLiquidityPools] = useState<any>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [notify, setNotify] = useState<any>({
+    status: "", // enum: ['error', 'success']
+    title: "",
+    description: ""
+  });
+  const [showNotify, toggleNotify] = useState<Boolean>(false);
+
   let wallet: any = useWallet();
   const { connection } = useConnection();
 
@@ -79,7 +88,13 @@ const SwapPage = (): JSX.Element => {
         toData.tokenInfo.mintAddress
       );
       if (!poolInfo) {
-        alert("Pool not found");
+        setNotify((old: any) => ({
+          ...old,
+          status: "error",
+          title: "AMM error",
+          description: "Current token pair pool not found"
+        }));
+        toggleNotify(true);
         return;
       }
 
@@ -257,7 +272,6 @@ const SwapPage = (): JSX.Element => {
     } else {
       fromTokenAccount = "";
     }
-    console.log(fromTokenAccount, "fromTokenAccount");
 
     let toTokenAccount = splTokenData.find(
       (token: any) => token.parsedInfo.mint === toData.tokenInfo.mintAddress
@@ -294,22 +308,56 @@ const SwapPage = (): JSX.Element => {
       toData.amount,
       wsol
     ).then(res => {
-      console.log("tx: ", res);
+      // let result = await connection.confirmTransaction(res);
+      // console.log(result, "/////");
+      toggleNotify(true);
+
+      setNotify((old: any) => ({
+        ...old,
+        status: "success",
+        title: "Transaction Send",
+        description: `Tx id: ${res}`
+      }));
     });
   };
+
+  useEffect(() => {
+    const time = setTimeout(() => {
+      toggleNotify(false);
+    }, 5000);
+
+    return () => clearTimeout(time);
+  }, [notify]);
+
+  useEffect(() => {
+    if (wallet.connected) {
+      setNotify((old: any) => ({
+        ...old,
+        status: "success",
+        title: "Wallet connected",
+        description: wallet.publicKey?.toBase58()
+      }));
+    } else {
+      let description = wallet.publicKey?.toBase58();
+      if (!description) {
+        description = "Please try again";
+      }
+      setNotify((old: any) => ({
+        ...old,
+        status: "error",
+        title: "Wallet disconnected",
+        description
+      }));
+    }
+
+    toggleNotify(true);
+  }, [wallet.connected]);
 
   return (
     <div className={style.swapPage}>
       {isLoading ? (
-        <div
-          style={{
-            fontSize: "2rem",
-            position: "absolute",
-            left: "50%",
-            transform: "translateX(-50%)"
-          }}
-        >
-          Loading Pool Info
+        <div className={style.loading}>
+          Loading raydium amm pool <Spinner />
         </div>
       ) : (
         ""
@@ -327,17 +375,22 @@ const SwapPage = (): JSX.Element => {
         getTokenInfo={getTokenInfo}
       />
       <div className={style.container}>
-        <SwapOperateContainer
-          toggleTokenList={toggleTokenList}
-          fromData={fromData}
-          toData={toData}
-          updateAmount={updateAmount}
-          switchFromAndTo={switchFromAndTo}
-          slippageValue={slippageValue}
-          accountInfo={accountInfo}
-          sendSwapTransaction={sendSwapTransaction}
-        />
+        {isLoading ? (
+          ""
+        ) : (
+          <SwapOperateContainer
+            toggleTokenList={toggleTokenList}
+            fromData={fromData}
+            toData={toData}
+            updateAmount={updateAmount}
+            switchFromAndTo={switchFromAndTo}
+            slippageValue={slippageValue}
+            accountInfo={accountInfo}
+            sendSwapTransaction={sendSwapTransaction}
+          />
+        )}
       </div>
+      {showNotify ? <Notify message={notify} /> : null}
     </div>
   );
 };
