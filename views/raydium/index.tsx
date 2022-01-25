@@ -1,8 +1,8 @@
+import { useState, useEffect, FunctionComponent } from "react";
 import style from "../../styles/swap.module.sass";
 import TokenList from "./TokenList";
 import SlippageSetting from "./SlippageSetting";
 import SwapOperateContainer from "./SwapOperateContainer";
-import { useState, useEffect } from "react";
 import { PublicKey } from "@solana/web3.js";
 import { TOKENS } from "../../utils/tokens";
 import { TOKEN_PROGRAM_ID } from "../../utils/ids";
@@ -12,12 +12,25 @@ import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import Notify from "../commons/Notify";
 import { Spinner } from "@chakra-ui/react";
 
-const SwapPage = (): JSX.Element => {
+export interface TokenData {
+  amount: number;
+  tokenInfo: {
+    symbol: string;
+    mintAddress: string;
+    logoURI: string;
+  };
+};
+
+export interface AccountInfo {
+  lamports: number;
+}
+
+const SwapPage: FunctionComponent = () => {
   const [showTokenList, setShowTokenList] = useState(false);
   const [showSlippageSetting, setShowSlippageSetting] = useState(false);
   const [selectType, setSelectType] = useState<any>("From");
-  const [fromData, setFromData] = useState<any>({});
-  const [toData, setToData] = useState<any>({});
+  const [fromData, setFromData] = useState<TokenData>({} as TokenData);
+  const [toData, setToData] = useState<TokenData>({} as TokenData);
   const [slippageValue, setSlippageValue] = useState(1);
   const [accountInfo, setAccountInfo] = useState<any>("");
   const [splTokenData, setSplTokenData] = useState<any>([]);
@@ -106,7 +119,7 @@ const SwapPage = (): JSX.Element => {
         parsedPoolInfo,
         fromData.tokenInfo.mintAddress,
         toData.tokenInfo.mintAddress,
-        fromData.amount,
+        fromData.amount.toString(),
         slippageValue
       );
 
@@ -304,8 +317,8 @@ const SwapPage = (): JSX.Element => {
       toData.tokenInfo.mintAddress,
       fromTokenAccount,
       toTokenAccount,
-      fromData.amount,
-      toData.amount,
+      fromData.amount.toString(),
+      toData.amount.toString(),
       wsol
     ).then(res => {
       // let result = await connection.confirmTransaction(res);

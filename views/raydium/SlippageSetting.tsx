@@ -1,8 +1,15 @@
+import { useState, useEffect, FunctionComponent } from "react";
 import style from "../../styles/swap.module.sass";
 import { CloseIcon } from "@chakra-ui/icons";
-import { useState, useEffect } from "react";
 
-const SlippageSetting = (props: any) => {
+interface SlippageSettingProps {
+  showSlippageSetting: boolean;
+  toggleSlippageSetting: Function;
+  getSlippageValue: Function;
+  slippageValue: number;
+};
+
+const SlippageSetting: FunctionComponent<SlippageSettingProps> = props => {
   const rate = [0.1, 0.5, 1];
   const [warningText, setWarningText] = useState("");
 
@@ -13,7 +20,7 @@ const SlippageSetting = (props: any) => {
   useEffect(() => {
     Options();
 
-    if (props.slippageValue < 0 || props.slippageValue === "") {
+    if (props.slippageValue < 0) {
       setWarningText("Please enter a valid slippage percentage");
     } else if (props.slippageValue < 1) {
       setWarningText("Your transaction may fail");
@@ -49,7 +56,7 @@ const SlippageSetting = (props: any) => {
   };
 
   const close = () => {
-    if (props.slippageValue < 0 || props.slippageValue === "") {
+    if (props.slippageValue < 0) {
       return;
     }
     props.toggleSlippageSetting();
