@@ -1,10 +1,10 @@
+import { FunctionComponent } from "react";
 import { JupiterProvider } from "@jup-ag/react-hook";
 import { Connection } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";
 const connection = new Connection("https://rpc-mainnet-fork.dappio.xyz");
 
-//@ts-ignore
-const Jupiter = ({ children }) => {
+const Jupiter: FunctionComponent = ({ children }) => {
   const wallet = useWallet();
   return (
     <JupiterProvider

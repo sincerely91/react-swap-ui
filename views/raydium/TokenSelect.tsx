@@ -1,9 +1,27 @@
+import { FunctionComponent } from "react";
+import Image from 'next/image';
 import style from "../../styles/swap.module.sass";
 import { ArrowDownIcon } from "@chakra-ui/icons";
-import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { AccountInfo, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { TokenData } from "./index";
 
-const TokenSelect = (props: any) => {
+interface TokenSelectProps {
+  type: string;
+  toggleTokenList: Function;
+  tokenData: TokenData;
+  updateAmount: Function;
+  accountInfo: AccountInfo<Uint8Array>;
+  wallet: Object;
+};
+
+interface SelectTokenProps {
+  propsData: {
+    tokenData: TokenData;
+  };
+};
+
+const TokenSelect: FunctionComponent<TokenSelectProps> = props => {
   let wallet = useWallet();
   const updateAmount = (e: any) => {
     e.preventDefault();
@@ -19,11 +37,11 @@ const TokenSelect = (props: any) => {
     props.toggleTokenList(props.type);
   };
 
-  const SelectTokenBtn = (selectTokenProps: any) => {
+  const SelectTokenBtn: FunctionComponent<SelectTokenProps> = selectTokenProps => {
     if (selectTokenProps.propsData.tokenData.tokenInfo?.symbol) {
       return (
         <>
-          <img
+          <Image
             src={selectTokenProps.propsData.tokenData.tokenInfo?.logoURI}
             alt="logo"
             className={style.img}

@@ -1,3 +1,4 @@
+import { FunctionComponent } from "react";
 import style from "../../styles/swap.module.sass";
 import { ArrowUpDownIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
 import TokenSelect from "./TokenSelect";
@@ -7,8 +8,27 @@ import {
   WalletModalProvider,
   WalletMultiButton
 } from "@solana/wallet-adapter-react-ui";
+import { TokenData } from "./index";
+import { AccountInfo } from "@solana/web3.js";
 
-const SwapOperateContainer = (props: any) => {
+interface SwapOperateContainerProps {
+  toggleTokenList: Function;
+  fromData: TokenData;
+  toData: TokenData;
+  updateAmount: Function;
+  switchFromAndTo: (event?: React.MouseEvent<HTMLDivElement>) => void;
+  slippageValue: number;
+  accountInfo: AccountInfo<Uint8Array>;
+  sendSwapTransaction: (event?: React.MouseEvent<HTMLButtonElement>) => void;
+};
+
+interface SwapDetailProps {
+  title: string;
+  tooltipContent: string;
+  value: string;
+};
+
+const SwapOperateContainer: FunctionComponent<SwapOperateContainerProps> = props => {
   let wallet = useWallet();
   const SwapBtn = (swapProps: any) => {
     if (wallet.connected) {
@@ -63,7 +83,7 @@ const SwapOperateContainer = (props: any) => {
     }
   };
 
-  const SwapDetailPreview = (props: any) => {
+  const SwapDetailPreview: FunctionComponent<SwapDetailProps> = props => {
     return (
       <div className={style.slippageRow}>
         <div className={style.slippageTooltipBlock}>
@@ -87,7 +107,7 @@ const SwapOperateContainer = (props: any) => {
     );
   };
 
-  const SwapDetailPreviewList = () => {
+  const SwapDetailPreviewList = (): JSX.Element => {
     return (
       <>
         <SwapDetailPreview
@@ -108,7 +128,7 @@ const SwapOperateContainer = (props: any) => {
           tokenData={props.fromData}
           updateAmount={props.updateAmount}
           accountInfo={props.accountInfo}
-          wallet={props.wallet}
+          wallet={wallet}
         />
         <div
           className={`${style.switchIcon} ${style.icon}`}
@@ -122,7 +142,7 @@ const SwapOperateContainer = (props: any) => {
           tokenData={props.toData}
           updateAmount={props.updateAmount}
           accountInfo={props.accountInfo}
-          wallet={props.wallet}
+          wallet={wallet}
         />
         <div className={style.slippageRow}>
           <div className={style.slippageTooltipBlock}>

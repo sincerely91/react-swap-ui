@@ -1,10 +1,17 @@
+import { FunctionComponent, useEffect, useRef, useState } from "react";
+import Image from 'next/image';
 import style from "../../styles/swap.module.sass";
 import { CloseIcon } from "@chakra-ui/icons";
-import { useEffect, useRef, useState } from "react";
 import SPLTokenRegistrySource from "../../utils/tokenList";
 import { TOKENS } from "../../utils/tokens";
 
-const TokenList = (props: any) => {
+interface TokenListProps {
+  showTokenList: boolean;
+  toggleTokenList: (event?: React.MouseEvent<HTMLDivElement>) => void;
+  getTokenInfo: Function;
+};
+
+const TokenList: FunctionComponent<TokenListProps> = props => {
   const [initialList, setList] = useState<any>([]);
   const [searchedList, setSearchList] = useState<any>([]);
   const searchRef = useRef<any>();
@@ -57,7 +64,7 @@ const TokenList = (props: any) => {
           key={item.address}
           onClick={() => setTokenInfo(item)}
         >
-          <img src={item.logoURI} alt="" className={style.tokenLogo} />
+          <Image src={item.logoURI} alt="" className={style.tokenLogo} />
           <div>{item.symbol}</div>
         </div>
       );
