@@ -1,9 +1,9 @@
 import { FunctionComponent, useEffect, useRef, useState } from "react";
 import Image from 'next/image';
-import style from "../../styles/swap.module.sass";
 import { CloseIcon } from "@chakra-ui/icons";
 import SPLTokenRegistrySource from "../../utils/tokenList";
 import { TOKENS } from "../../utils/tokens";
+import style from "../../styles/swap.module.sass";
 
 interface TokenListProps {
   showTokenList: boolean;

@@ -1,16 +1,16 @@
 import { useState, useEffect, FunctionComponent } from "react";
-import style from "../../styles/swap.module.sass";
 import TokenList from "./TokenList";
 import SlippageSetting from "./SlippageSetting";
 import SwapOperateContainer from "./SwapOperateContainer";
 import { PublicKey } from "@solana/web3.js";
+import { Spinner } from "@chakra-ui/react";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { TOKENS } from "../../utils/tokens";
 import { TOKEN_PROGRAM_ID } from "../../utils/ids";
 import { getPoolByTokenMintAddresses } from "../../utils/pools";
 import { swap, getSwapOutAmount, setupPools } from "../../utils/swap";
-import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import Notify from "../commons/Notify";
-import { Spinner } from "@chakra-ui/react";
+import style from "../../styles/swap.module.sass";
 
 export interface TokenData {
   amount: number;

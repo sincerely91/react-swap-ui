@@ -1,15 +1,15 @@
 import { FunctionComponent } from "react";
-import style from "../../styles/swap.module.sass";
 import { ArrowUpDownIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
-import TokenSelect from "./TokenSelect";
 import { Tooltip } from "@chakra-ui/react";
+import { AccountInfo } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";
 import {
   WalletModalProvider,
   WalletMultiButton
 } from "@solana/wallet-adapter-react-ui";
 import { TokenData } from "./index";
-import { AccountInfo } from "@solana/web3.js";
+import TokenSelect from "./TokenSelect";
+import style from "../../styles/swap.module.sass";
 
 interface SwapOperateContainerProps {
   toggleTokenList: Function;

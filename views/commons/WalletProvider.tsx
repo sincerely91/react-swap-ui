@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from "react";
+import React, { FunctionComponent, useMemo } from "react";
 import {
   ConnectionProvider,
   WalletProvider
@@ -18,7 +18,7 @@ import { clusterApiUrl } from "@solana/web3.js";
 // Default styles that can be overridden by your app
 require("@solana/wallet-adapter-react-ui/styles.css");
 
-export const Wallet: FC = props => {
+export const Wallet: FunctionComponent = props => {
   // // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
   const network = WalletAdapterNetwork.Mainnet;
 
