@@ -1,13 +1,22 @@
-import style from "../../styles/swap.module.sass";
-
+import { FunctionComponent } from "react";
 import {
   Alert,
   AlertIcon,
   AlertTitle,
-  AlertDescription
+  AlertDescription,
+  AlertStatus
 } from "@chakra-ui/react";
+import style from "../../styles/swap.module.sass";
 
-const Notify = (props: any) => {
+interface NotifyProps {
+  message: {
+    status: AlertStatus;
+    title: string;
+    description: string;
+  };
+};
+
+const Notify: FunctionComponent<NotifyProps> = props => {
   return (
     <Alert status={props.message.status} className={style.notifyContainer}>
       <div className={style.notifyTitleRow}>

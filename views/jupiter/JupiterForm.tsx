@@ -2,7 +2,6 @@ import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
 import { PublicKey } from "@solana/web3.js";
 import { TokenListProvider, TokenInfo } from "@solana/spl-token-registry";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-
 import { useJupiter } from "@jup-ag/react-hook";
 import { ENV as ENVChainId } from "@solana/spl-token-registry";
 import FeeInfo from "./FeeInfo";

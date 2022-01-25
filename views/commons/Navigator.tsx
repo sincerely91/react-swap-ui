@@ -1,4 +1,6 @@
+import { FunctionComponent } from "react";
 import Link from "next/link";
+import Image from "next/image"
 import {
   WalletModalProvider,
   WalletDisconnectButton,
@@ -7,13 +9,13 @@ import {
 import { useWallet } from "@solana/wallet-adapter-react";
 import style from "../../styles/navigator.module.sass";
 
-const Navigator = () => {
+const Navigator: FunctionComponent = () => {
   const wallet = useWallet();
   return (
     <div className={style.sidebar}>
       <div className={style.routesBlock}>
-        <Link href="/">
-          <img
+        <Link href="/" passHref>
+          <Image
             src="https://dappio.xyz/_nuxt/img/logo_v4.eb14d4f.png"
             alt=""
             className={style.dappioLogo}

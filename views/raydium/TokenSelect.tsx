@@ -1,10 +1,10 @@
 import { FunctionComponent } from "react";
-import Image from 'next/image';
-import style from "../../styles/swap.module.sass";
+import Image from "next/image";
 import { ArrowDownIcon } from "@chakra-ui/icons";
 import { AccountInfo, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { TokenData } from "./index";
+import style from "../../styles/swap.module.sass";
 
 interface TokenSelectProps {
   type: string;

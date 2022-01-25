@@ -1,6 +1,6 @@
 import { useState, useEffect, FunctionComponent } from "react";
-import style from "../../styles/swap.module.sass";
 import { CloseIcon } from "@chakra-ui/icons";
+import style from "../../styles/swap.module.sass";
 
 interface SlippageSettingProps {
   showSlippageSetting: boolean;
