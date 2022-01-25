@@ -1,4 +1,4 @@
-import style from "../../styles/_swap.module.sass";
+import style from "../../styles/swap.module.sass";
 import { CloseIcon } from "@chakra-ui/icons";
 import { useEffect, useRef, useState } from "react";
 import SPLTokenRegistrySource from "../../utils/tokenList";

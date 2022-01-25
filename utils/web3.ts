@@ -16,10 +16,7 @@ import {
 import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from "./ids";
 import { ACCOUNT_LAYOUT } from "./layouts";
 
-// export const commitment: Commitment = 'processed'
 export const commitment: Commitment = "confirmed";
-// export const commitment: Commitment = 'finalized'
-
 export async function createTokenAccountIfNotExist(
   connection: Connection,
   account: string | undefined | null,

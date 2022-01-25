@@ -1,4 +1,4 @@
-import style from "../../styles/_swap.module.sass";
+import style from "../../styles/swap.module.sass";
 import { ArrowDownIcon } from "@chakra-ui/icons";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";

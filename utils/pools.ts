@@ -75,48 +75,6 @@ export function getPoolByTokenMintAddresses(
   return pool;
 }
 
-// export function getPoolListByTokenMintAddresses(
-//   coinMintAddress: string,
-//   pcMintAddress: string,
-//   ammIdOrMarket: string | undefined
-// ): LiquidityPoolInfo[] {
-//   const pool = LIQUIDITY_POOLS.filter((pool) => {
-//     if (coinMintAddress && pcMintAddress) {
-//       if (
-//         ((pool.coin.mintAddress === coinMintAddress && pool.pc.mintAddress === pcMintAddress) ||
-//           (pool.coin.mintAddress === pcMintAddress && pool.pc.mintAddress === coinMintAddress)) &&
-//         [4, 5].includes(pool.version) &&
-//         pool.official
-//       ) {
-//         return !(ammIdOrMarket !== undefined && pool.ammId !== ammIdOrMarket && pool.serumMarket !== ammIdOrMarket)
-//       }
-//     } else {
-//       return !(ammIdOrMarket !== undefined && pool.ammId !== ammIdOrMarket && pool.serumMarket !== ammIdOrMarket)
-//     }
-//     return false
-//   })
-//   if (pool.length > 0) {
-//     return cloneDeep(pool)
-//   } else {
-//     return cloneDeep(
-//       LIQUIDITY_POOLS.filter((pool) => {
-//         if (coinMintAddress && pcMintAddress) {
-//           if (
-//             ((pool.coin.mintAddress === coinMintAddress && pool.pc.mintAddress === pcMintAddress) ||
-//               (pool.coin.mintAddress === pcMintAddress && pool.pc.mintAddress === coinMintAddress)) &&
-//             [4, 5].includes(pool.version)
-//           ) {
-//             return !(ammIdOrMarket !== undefined && pool.ammId !== ammIdOrMarket && pool.serumMarket !== ammIdOrMarket)
-//           }
-//         } else {
-//           return !(ammIdOrMarket !== undefined && pool.ammId !== ammIdOrMarket && pool.serumMarket !== ammIdOrMarket)
-//         }
-//         return false
-//       })
-//     )
-//   }
-// }
-
 export function getLpMintByTokenMintAddresses(
   coinMintAddress: string,
   pcMintAddress: string,

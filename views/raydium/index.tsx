@@ -1,5 +1,4 @@
-import style from "../../styles/_swap.module.sass";
-// import TitleRow from "./TitleRow";
+import style from "../../styles/swap.module.sass";
 import TokenList from "./TokenList";
 import SlippageSetting from "./SlippageSetting";
 import SwapOperateContainer from "./SwapOperateContainer";
@@ -14,10 +13,10 @@ import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 const SwapPage = (): JSX.Element => {
   const [showTokenList, setShowTokenList] = useState(false);
   const [showSlippageSetting, setShowSlippageSetting] = useState(false);
-  const [selectType, setSelectType] = useState<any>("From"); // 預設 from
-  const [fromData, setFromData] = useState<any>({}); // {amount, tokenInfo}
+  const [selectType, setSelectType] = useState<any>("From");
+  const [fromData, setFromData] = useState<any>({});
   const [toData, setToData] = useState<any>({});
-  const [slippageValue, setSlippageValue] = useState(1); // 預設 1%
+  const [slippageValue, setSlippageValue] = useState(1);
   const [accountInfo, setAccountInfo] = useState<any>("");
   const [splTokenData, setSplTokenData] = useState<any>([]);
   const [liquidityPools, setLiquidityPools] = useState<any>("");
@@ -32,7 +31,6 @@ const SwapPage = (): JSX.Element => {
       setIsLoading(false);
     });
     return () => {
-      // @ts-ignore
       setLiquidityPools("");
     };
   }, []);
@@ -43,7 +41,6 @@ const SwapPage = (): JSX.Element => {
         return;
       }
       let key = await wallet.publicKey?.toBase58();
-      // @ts-ignore
       let data = await connection.getAccountInfo(new PublicKey(key));
       setAccountInfo(data);
     };
@@ -51,12 +48,10 @@ const SwapPage = (): JSX.Element => {
     getSPLTokenData();
     getAccountInfo();
     return () => {
-      // @ts-ignore
       setAccountInfo("");
     };
   }, [wallet.connected]);
 
-  // 更新金額
   const updateAmount = (e: any) => {
     if (e.type === "From") {
       setFromData((old: any) => ({
@@ -124,7 +119,6 @@ const SwapPage = (): JSX.Element => {
     setShowSlippageSetting(() => !showSlippageSetting);
   };
 
-  // 取得滑價設定
   const getSlippageValue = (e: any) => {
     if (e === "") {
       setSlippageValue(() => e);
@@ -151,7 +145,6 @@ const SwapPage = (): JSX.Element => {
 
   const getTokenInfo = (e: any) => {
     if (selectType === "From") {
-      // token to === token from 時清空 to
       if (toData.tokenInfo?.symbol === e?.symbol) {
         setToData((old: any) => ({
           ...old,
@@ -186,7 +179,7 @@ const SwapPage = (): JSX.Element => {
       .getParsedTokenAccountsByOwner(
         wallet.publicKey,
         {
-          programId: new PublicKey(TOKEN_PROGRAM_ID) // Token Program ID
+          programId: new PublicKey(TOKEN_PROGRAM_ID)
         },
         "confirmed"
       )
@@ -200,10 +193,7 @@ const SwapPage = (): JSX.Element => {
               10 ** item.account.data.parsed.info.tokenAmount.decimals
           };
 
-          if (
-            token.amount === 0 ||
-            item.account.data.parsed.info.tokenAmount.decimals === 0
-          ) {
+          if (item.account.data.parsed.info.tokenAmount.decimals === 0) {
             return undefined;
           } else {
             return token;
@@ -214,7 +204,6 @@ const SwapPage = (): JSX.Element => {
         setSplTokenData(() => tokenList.filter((t: any) => t !== undefined));
       });
   };
-  // getSPLTokenData();
 
   const SPLToken = (): JSX.Element => {
     let tokenList: any = [];
@@ -268,6 +257,7 @@ const SwapPage = (): JSX.Element => {
     } else {
       fromTokenAccount = "";
     }
+    console.log(fromTokenAccount, "fromTokenAccount");
 
     let toTokenAccount = splTokenData.find(
       (token: any) => token.parsedInfo.mint === toData.tokenInfo.mintAddress
@@ -304,7 +294,7 @@ const SwapPage = (): JSX.Element => {
       toData.amount,
       wsol
     ).then(res => {
-      console.log(res, "///");
+      console.log("tx: ", res);
     });
   };
 
@@ -337,12 +327,6 @@ const SwapPage = (): JSX.Element => {
         getTokenInfo={getTokenInfo}
       />
       <div className={style.container}>
-        {/* <TitleRow
-          toggleSlippageSetting={toggleSlippageSetting}
-          fromData={fromData}
-          toData={toData}
-          updateSwapOutAmount={updateSwapOutAmount}
-        /> */}
         <SwapOperateContainer
           toggleTokenList={toggleTokenList}
           fromData={fromData}

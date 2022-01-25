@@ -419,8 +419,6 @@ export async function setupPools(conn: Connection) {
     tokenMintData[itemToken.mintAddress] = itemToken;
   }
   for (let indexAmmInfo = 0; indexAmmInfo < ammAll.length; indexAmmInfo += 1) {
-    // if (BLACK_LIST.includes(ammAll[indexAmmInfo].publicKey.toString()))
-    //   continue;
     const ammInfo = AMM_INFO_LAYOUT_V4.decode(
       Buffer.from(ammAll[indexAmmInfo].accountInfo.data)
     );
@@ -582,9 +580,7 @@ export async function setupPools(conn: Connection) {
       new PublicKey(lp.mintAddress)
     );
 
-    // const poolInfo = cloneDeep(pool);
     const poolInfo = JSON.parse(JSON.stringify(pool));
-
     poolInfo.coin.balance = new TokenAmount(0, coin.decimals);
     poolInfo.pc.balance = new TokenAmount(0, pc.decimals);
 

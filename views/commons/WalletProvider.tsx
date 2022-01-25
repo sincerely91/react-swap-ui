@@ -19,12 +19,11 @@ import { clusterApiUrl } from "@solana/web3.js";
 require("@solana/wallet-adapter-react-ui/styles.css");
 
 export const Wallet: FC = props => {
-  // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
-  const network = WalletAdapterNetwork.Testnet;
-  // const network = WalletAdapterNetwork.Mainnet;
+  // // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
+  const network = WalletAdapterNetwork.Mainnet;
 
-  // You can also provide a custom RPC endpoint.
-  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  // // You can also provide a custom RPC endpoint.
+  const endpoint = "https://rpc-mainnet-fork.dappio.xyz";
 
   // @solana/wallet-adapter-wallets includes all the adapters but supports tree shaking and lazy loading --
   // Only the wallets you configure here will be compiled into your application, and only the dependencies
@@ -50,5 +49,3 @@ export const Wallet: FC = props => {
     </ConnectionProvider>
   );
 };
-
-// note: removed `WalletModalProvider and Buttons` to `Navigator`.

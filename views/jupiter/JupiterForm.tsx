@@ -20,7 +20,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = props => {
     amount: 1,
     inputMint: undefined,
     outputMint: undefined,
-    slippage: 1 // 0.1%
+    slippage: 1 // 1%
   });
 
   const [inputTokenInfo, outputTokenInfo] = useMemo(() => {
@@ -188,7 +188,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = props => {
               wallet.sendTransaction &&
               wallet.publicKey
             ) {
-              const swapResult = await exchange({
+              await exchange({
                 wallet: {
                   sendTransaction: wallet.sendTransaction,
                   publicKey: wallet.publicKey,
@@ -197,25 +197,12 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = props => {
                 },
                 route: routes[0],
                 confirmationWaiterFactory: async txid => {
-                  console.log("sending transaction");
                   await connection.confirmTransaction(txid);
-                  console.log("confirmed transaction");
-
                   return await connection.getTransaction(txid, {
                     commitment: "confirmed"
                   });
                 }
               });
-
-              console.log({ swapResult });
-
-              if ("error" in swapResult) {
-                console.log("Error:", swapResult.error);
-              } else if ("txid" in swapResult) {
-                console.log("Sucess:", swapResult.txid);
-                console.log("Input:", swapResult.inputAmount);
-                console.log("Output:", swapResult.outputAmount);
-              }
             }
           }}
         >

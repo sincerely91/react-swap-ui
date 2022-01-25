@@ -1,4 +1,4 @@
-import style from "../../styles/_swap.module.sass";
+import style from "../../styles/swap.module.sass";
 import { ArrowUpDownIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
 import TokenSelect from "./TokenSelect";
 import { Tooltip } from "@chakra-ui/react";

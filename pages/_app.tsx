@@ -3,7 +3,7 @@ import type { AppProps } from "next/app";
 import { Wallet } from "../views/commons/WalletProvider";
 import Navigator from "../views/commons/Navigator";
 
-function MyApp({ Component, pageProps }: AppProps) {
+function SwapUI({ Component, pageProps }: AppProps) {
   return (
     <>
       <Wallet>
@@ -14,4 +14,4 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
-export default MyApp;
+export default SwapUI;

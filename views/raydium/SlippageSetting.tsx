@@ -1,9 +1,8 @@
-import style from "../../styles/_swap.module.sass";
+import style from "../../styles/swap.module.sass";
 import { CloseIcon } from "@chakra-ui/icons";
 import { useState, useEffect } from "react";
 
 const SlippageSetting = (props: any) => {
-  // slippage list
   const rate = [0.1, 0.5, 1];
   const [warningText, setWarningText] = useState("");
 
@@ -78,7 +77,6 @@ const SlippageSetting = (props: any) => {
                 type="number"
                 placeholder="0%"
                 className={style.input}
-                // ref={rateRef}
                 value={props.slippageValue}
                 onChange={updateInputRate}
               />

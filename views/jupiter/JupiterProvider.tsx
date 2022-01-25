@@ -1,14 +1,11 @@
 import { JupiterProvider } from "@jup-ag/react-hook";
 import { Connection } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";
-
-// which RPC to use to send transaction
-// const connection = new Connection("https://solana-api.projectserum.com");
 const connection = new Connection("https://rpc-mainnet-fork.dappio.xyz");
 
 //@ts-ignore
 const Jupiter = ({ children }) => {
-  const wallet = useWallet(); // user wallet
+  const wallet = useWallet();
   return (
     <JupiterProvider
       connection={connection}
