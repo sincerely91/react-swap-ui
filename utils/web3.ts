@@ -1,4 +1,5 @@
 import { initializeAccount } from "@project-serum/serum/lib/token-instructions";
+import { WalletContextState } from "@solana/wallet-adapter-react";
 
 // @ts-ignore without ts ignore, yarn build will failed
 import { Token } from "@solana/spl-token";
@@ -311,3 +312,35 @@ export async function createAmmAuthority(programId: PublicKey) {
     programId
   );
 }
+
+export const getSPLTokenData = async (
+  wallet: WalletContextState,
+  connection: Connection
+) => {
+  if (!wallet.connected) {
+    return;
+  }
+  const res = await connection.getParsedTokenAccountsByOwner(
+    wallet.publicKey!,
+    {
+      programId: new PublicKey(TOKEN_PROGRAM_ID)
+    },
+    "confirmed"
+  );
+
+  return res.value.map(item => {
+    let token = {
+      pubkey: item.pubkey.toBase58(),
+      parsedInfo: item.account.data.parsed.info,
+      amount:
+        item.account.data.parsed.info.tokenAmount.amount /
+        10 ** item.account.data.parsed.info.tokenAmount.decimals
+    };
+
+    if (item.account.data.parsed.info.tokenAmount.decimals === 0) {
+      return undefined;
+    } else {
+      return token;
+    }
+  });
+};

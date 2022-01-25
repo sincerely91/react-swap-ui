@@ -9,9 +9,10 @@ import { TOKENS } from "../../utils/tokens";
 import { TOKEN_PROGRAM_ID } from "../../utils/ids";
 import { getPoolByTokenMintAddresses } from "../../utils/pools";
 import { swap, getSwapOutAmount, setupPools } from "../../utils/swap";
+import { getSPLTokenData } from "../../utils/web3";
 import Notify from "../commons/Notify";
+import SPLToken from "../commons/SPLToken";
 import style from "../../styles/swap.module.sass";
-
 export interface TokenData {
   amount: number;
   tokenInfo: {
@@ -19,7 +20,7 @@ export interface TokenData {
     mintAddress: string;
     logoURI: string;
   };
-};
+}
 
 export interface AccountInfo {
   lamports: number;
@@ -67,8 +68,12 @@ const SwapPage: FunctionComponent = () => {
       setAccountInfo(data);
     };
 
-    getSPLTokenData();
     getAccountInfo();
+    getSPLTokenData(wallet, connection).then((tokenList: any) => {
+      if (tokenList) {
+        setSplTokenData(() => tokenList.filter((t: any) => t !== undefined));
+      }
+    });
     return () => {
       setAccountInfo("");
     };
@@ -199,78 +204,6 @@ const SwapPage: FunctionComponent = () => {
     }
   };
 
-  const getSPLTokenData = async () => {
-    if (!wallet.connected) {
-      return;
-    }
-    connection
-      .getParsedTokenAccountsByOwner(
-        wallet.publicKey,
-        {
-          programId: new PublicKey(TOKEN_PROGRAM_ID)
-        },
-        "confirmed"
-      )
-      .then(res => {
-        return res.value.map((item, index) => {
-          let token = {
-            pubkey: item.pubkey.toBase58(),
-            parsedInfo: item.account.data.parsed.info,
-            amount:
-              item.account.data.parsed.info.tokenAmount.amount /
-              10 ** item.account.data.parsed.info.tokenAmount.decimals
-          };
-
-          if (item.account.data.parsed.info.tokenAmount.decimals === 0) {
-            return undefined;
-          } else {
-            return token;
-          }
-        });
-      })
-      .then(async (tokenList: any) => {
-        setSplTokenData(() => tokenList.filter((t: any) => t !== undefined));
-      });
-  };
-
-  const SPLToken = (): JSX.Element => {
-    let tokenList: any = [];
-    if (splTokenData.length === 0) {
-      return <></>;
-    }
-
-    for (const [_, value] of Object.entries(TOKENS)) {
-      let token = splTokenData.find(
-        (t: any) => t.parsedInfo.mint === value.mintAddress
-      );
-      if (token) {
-        token["symbol"] = value.symbol;
-        token["mint"] = token?.parsedInfo.mint;
-        token["pubkey"] = token?.pubkey;
-        token["amount"] = token?.amount;
-        tokenList.push(token);
-      }
-    }
-
-    let tokens = tokenList.map((item: any) => {
-      return (
-        <div key={item.mint} className={style.splTokenItem}>
-          <div>Symbol: {item.symbol}</div>
-          <div>Mint: {item.mint}</div>
-          <div>Pubkey: {item.pubkey}</div>
-          <div>Amount: {item.amount}</div>
-        </div>
-      );
-    });
-
-    return (
-      <div className={style.splTokenContainer}>
-        <div className={style.splTokenListTitle}>Your Tokens</div>
-        {tokens}
-      </div>
-    );
-  };
-
   const sendSwapTransaction = async () => {
     let poolInfo = getPoolByTokenMintAddresses(
       fromData.tokenInfo.mintAddress,
@@ -375,7 +308,7 @@ const SwapPage: FunctionComponent = () => {
       ) : (
         ""
       )}
-      {wallet.connected ? <SPLToken /> : ""}
+      <SPLToken splTokenData={splTokenData} />
       <SlippageSetting
         showSlippageSetting={showSlippageSetting}
         toggleSlippageSetting={toggleSlippageSetting}
