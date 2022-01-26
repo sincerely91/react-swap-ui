@@ -1,13 +1,12 @@
 import { FunctionComponent } from "react";
 import { ArrowUpDownIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
 import { Tooltip } from "@chakra-ui/react";
-import { AccountInfo } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";
 import {
   WalletModalProvider,
   WalletMultiButton
 } from "@solana/wallet-adapter-react-ui";
-import { TokenData } from "./index";
+import { TokenData } from ".";
 import TokenSelect from "./TokenSelect";
 import { ISplToken } from "../../utils/web3";
 import style from "../../styles/swap.module.sass";
@@ -19,7 +18,6 @@ interface SwapOperateContainerProps {
   updateAmount: Function;
   switchFromAndTo: (event?: React.MouseEvent<HTMLDivElement>) => void;
   slippageValue: number;
-  accountInfo: AccountInfo<Uint8Array>;
   sendSwapTransaction: (event?: React.MouseEvent<HTMLButtonElement>) => void;
   splTokenData: ISplToken[];
 }
@@ -131,7 +129,6 @@ const SwapOperateContainer: FunctionComponent<
           toggleTokenList={props.toggleTokenList}
           tokenData={props.fromData}
           updateAmount={props.updateAmount}
-          accountInfo={props.accountInfo}
           wallet={wallet}
           splTokenData={props.splTokenData}
         />
@@ -146,7 +143,6 @@ const SwapOperateContainer: FunctionComponent<
           toggleTokenList={props.toggleTokenList}
           tokenData={props.toData}
           updateAmount={props.updateAmount}
-          accountInfo={props.accountInfo}
           wallet={wallet}
           splTokenData={props.splTokenData}
         />
@@ -169,9 +165,9 @@ const SwapOperateContainer: FunctionComponent<
           </div>
           <div>{props.slippageValue}%</div>
         </div>
-        {props.fromData.amount > 0 &&
+        {props.fromData.amount! > 0 &&
         props.fromData.tokenInfo.symbol &&
-        props.toData.amount > 0 &&
+        props.toData.amount! > 0 &&
         props.toData.tokenInfo.symbol ? (
           <SwapDetailPreviewList />
         ) : (

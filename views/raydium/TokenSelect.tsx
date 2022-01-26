@@ -1,6 +1,5 @@
 import { FunctionComponent, useEffect, useState } from "react";
 import { ArrowDownIcon } from "@chakra-ui/icons";
-import { AccountInfo } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { TokenData } from "./index";
 import { ISplToken } from "../../utils/web3";
@@ -11,9 +10,13 @@ interface TokenSelectProps {
   toggleTokenList: Function;
   tokenData: TokenData;
   updateAmount: Function;
-  accountInfo: AccountInfo<Uint8Array>;
   wallet: Object;
   splTokenData: ISplToken[];
+}
+
+export interface IUpdateAmountData {
+  type: string;
+  amount: number;
 }
 
 interface SelectTokenProps {
@@ -29,7 +32,7 @@ const TokenSelect: FunctionComponent<TokenSelectProps> = props => {
   const updateAmount = (e: any) => {
     e.preventDefault();
 
-    const amountData = {
+    const amountData: IUpdateAmountData = {
       amount: e.target.value,
       type: props.type
     };

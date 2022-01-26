@@ -7,13 +7,13 @@ interface SlippageSettingProps {
   toggleSlippageSetting: Function;
   getSlippageValue: Function;
   slippageValue: number;
-};
+}
 
 const SlippageSetting: FunctionComponent<SlippageSettingProps> = props => {
   const rate = [0.1, 0.5, 1];
   const [warningText, setWarningText] = useState("");
 
-  const setSlippageBtn = (item: any) => {
+  const setSlippageBtn = (item: number) => {
     props.getSlippageValue(item);
   };
 
@@ -51,8 +51,8 @@ const SlippageSetting: FunctionComponent<SlippageSettingProps> = props => {
     );
   };
 
-  const updateInputRate = (e: any) => {
-    props.getSlippageValue(e.target.value);
+  const updateInputRate = (e: React.FormEvent<HTMLInputElement>) => {
+    props.getSlippageValue(e.currentTarget.value);
   };
 
   const close = () => {

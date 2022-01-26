@@ -2,6 +2,7 @@ import { FunctionComponent, useEffect, useRef, useState } from "react";
 import { CloseIcon } from "@chakra-ui/icons";
 import SPLTokenRegistrySource from "../../utils/tokenList";
 import { TOKENS } from "../../utils/tokens";
+import { ITokenInfo } from ".";
 import style from "../../styles/swap.module.sass";
 
 interface TokenListProps {
@@ -11,31 +12,30 @@ interface TokenListProps {
 }
 
 const TokenList: FunctionComponent<TokenListProps> = props => {
-  const [initialList, setList] = useState<any>([]);
-  const [searchedList, setSearchList] = useState<any>([]);
+  const [initialList, setList] = useState<ITokenInfo[]>([]);
+  const [searchedList, setSearchList] = useState<ITokenInfo[]>([]);
   const searchRef = useRef<any>();
 
   useEffect(() => {
     SPLTokenRegistrySource().then((res: any) => {
-      let list: any = [];
+      let list: ITokenInfo[] = [];
       res.map((item: any) => {
-        let token = {};
+        let token = {} as ITokenInfo;
         if (
           TOKENS[item.symbol] &&
           !list.find(
-            (t: any) => t.mintAddress === TOKENS[item.symbol].mintAddress
+            (t: ITokenInfo) => t.mintAddress === TOKENS[item.symbol].mintAddress
           )
         ) {
           token = TOKENS[item.symbol];
-          // @ts-ignore
           token["logoURI"] = item.logoURI;
-          // @ts-ignore
-          token["address"] = TOKENS[item.symbol].mintAddress;
           list.push(token);
         }
       });
       setList(() => list);
-      props.getTokenInfo(list.find((item: any) => item.symbol === "SOL"));
+      props.getTokenInfo(
+        list.find((item: ITokenInfo) => item.symbol === "SOL")
+      );
     });
   }, []);
 
@@ -43,7 +43,7 @@ const TokenList: FunctionComponent<TokenListProps> = props => {
     setSearchList(() => initialList);
   }, [initialList]);
 
-  const setTokenInfo = (item: any) => {
+  const setTokenInfo = (item: ITokenInfo) => {
     props.getTokenInfo(item);
     props.toggleTokenList();
   };
@@ -55,12 +55,12 @@ const TokenList: FunctionComponent<TokenListProps> = props => {
     }
   }, [props.showTokenList]);
 
-  const listItems = (data: any) => {
-    return data.map((item: any) => {
+  const listItems = (data: ITokenInfo[]) => {
+    return data.map((item: ITokenInfo) => {
       return (
         <div
           className={style.tokenRow}
-          key={item.address}
+          key={item.mintAddress}
           onClick={() => setTokenInfo(item)}
         >
           <img src={item.logoURI} alt="" className={style.tokenLogo} />
@@ -72,8 +72,8 @@ const TokenList: FunctionComponent<TokenListProps> = props => {
 
   const searchToken = (e: any) => {
     let key = e.target.value.toUpperCase();
-    let newList: any = [];
-    initialList.map((item: any) => {
+    let newList: ITokenInfo[] = [];
+    initialList.map((item: ITokenInfo) => {
       if (item.symbol.includes(key)) {
         newList.push(item);
       }

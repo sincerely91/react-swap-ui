@@ -35,7 +35,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = props => {
       tokenMap.get(formValue.outputMint?.toBase58() || "")
     ];
   }, [formValue.inputMint?.toBase58(), formValue.outputMint?.toBase58()]);
-  const [splTokenData, setSplTokenData] = useState<any>([]);
+  const [splTokenData, setSplTokenData] = useState<ISplToken[]>([]);
 
   useEffect(() => {
     new TokenListProvider().resolve().then(tokens => {
@@ -122,7 +122,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = props => {
     if (!wallet.connected) {
       return;
     }
-    getSPLTokenData(wallet, connection).then((tokenList: any) => {
+    getSPLTokenData(wallet, connection).then((tokenList: ISplToken[]) => {
       if (tokenList) {
         setSplTokenData(() => tokenList.filter((t: any) => t !== undefined));
       }
@@ -269,13 +269,15 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = props => {
                 route: routes[0],
                 confirmationWaiterFactory: async txid => {
                   await connection.confirmTransaction(txid);
-                  getSPLTokenData(wallet, connection).then((tokenList: any) => {
-                    if (tokenList) {
-                      setSplTokenData(() =>
-                        tokenList.filter((t: any) => t !== undefined)
-                      );
+                  getSPLTokenData(wallet, connection).then(
+                    (tokenList: ISplToken[]) => {
+                      if (tokenList) {
+                        setSplTokenData(() =>
+                          tokenList.filter((t: ISplToken) => t !== undefined)
+                        );
+                      }
                     }
-                  });
+                  );
                   return await connection.getTransaction(txid, {
                     commitment: "confirmed"
                   });

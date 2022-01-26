@@ -322,9 +322,9 @@ export interface ISplToken {
 export const getSPLTokenData = async (
   wallet: WalletContextState,
   connection: Connection
-) => {
+): Promise<ISplToken[]> => {
   if (!wallet.connected) {
-    return;
+    return [];
   }
   const res = await connection.getParsedTokenAccountsByOwner(
     wallet.publicKey!,
@@ -335,7 +335,7 @@ export const getSPLTokenData = async (
   );
 
   let data = await connection.getAccountInfo(wallet.publicKey!);
-  let list: (ISplToken | undefined)[] = res.value.map(item => {
+  let list = res.value.map(item => {
     let token = {
       pubkey: item.pubkey.toBase58(),
       parsedInfo: item.account.data.parsed.info,
@@ -359,5 +359,5 @@ export const getSPLTokenData = async (
     //@ts-ignore
     amount: data?.lamports / LAMPORTS_PER_SOL
   });
-  return list;
+  return list as ISplToken[];
 };

@@ -1,28 +1,29 @@
 import { useState, useEffect, FunctionComponent } from "react";
 import TokenList from "./TokenList";
+import TitleRow from "./TitleRow";
 import SlippageSetting from "./SlippageSetting";
 import SwapOperateContainer from "./SwapOperateContainer";
 import { PublicKey, Connection } from "@solana/web3.js";
 import { Spinner } from "@chakra-ui/react";
-import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { useWallet, WalletContextState } from "@solana/wallet-adapter-react";
 import { getPoolByTokenMintAddresses } from "../../utils/pools";
 import { swap, getSwapOutAmount, setupPools } from "../../utils/swap";
 import { getSPLTokenData } from "../../utils/web3";
 import Notify from "../commons/Notify";
+import { INotify } from "../commons/Notify";
 import SplTokenList from "../commons/SplTokenList";
 import { ISplToken } from "../../utils/web3";
+import { IUpdateAmountData } from "./TokenSelect";
 import style from "../../styles/swap.module.sass";
-export interface TokenData {
-  amount: number;
-  tokenInfo: {
-    symbol: string;
-    mintAddress: string;
-    logoURI: string;
-  };
-}
 
-export interface AccountInfo {
-  lamports: number;
+export interface ITokenInfo {
+  symbol: string;
+  mintAddress: string;
+  logoURI: string;
+}
+export interface TokenData {
+  amount: number | null;
+  tokenInfo: ITokenInfo;
 }
 
 const SwapPage: FunctionComponent = () => {
@@ -32,18 +33,18 @@ const SwapPage: FunctionComponent = () => {
   const [fromData, setFromData] = useState<TokenData>({} as TokenData);
   const [toData, setToData] = useState<TokenData>({} as TokenData);
   const [slippageValue, setSlippageValue] = useState(1);
-  const [accountInfo, setAccountInfo] = useState<any>("");
   const [splTokenData, setSplTokenData] = useState<ISplToken[]>([]);
   const [liquidityPools, setLiquidityPools] = useState<any>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [notify, setNotify] = useState<any>({
-    status: "", // enum: ['error', 'success']
+  const [notify, setNotify] = useState<INotify>({
+    status: "info",
     title: "",
-    description: ""
+    description: "",
+    link: ""
   });
   const [showNotify, toggleNotify] = useState<Boolean>(false);
 
-  let wallet: any = useWallet();
+  let wallet: WalletContextState = useWallet();
   const connection = new Connection("https://rpc-mainnet-fork.dappio.xyz", {
     wsEndpoint: "wss://rpc-mainnet-fork.dappio.xyz/ws",
     commitment: "processed"
@@ -60,36 +61,25 @@ const SwapPage: FunctionComponent = () => {
     };
   }, []);
 
-  const getAccountInfo = async () => {
-    if (!wallet.connected) {
-      return;
-    }
-    let key = await wallet.publicKey?.toBase58();
-    let data = await connection.getAccountInfo(new PublicKey(key));
-    setAccountInfo(data);
-  };
-
   useEffect(() => {
-    getAccountInfo();
-    getSPLTokenData(wallet, connection).then((tokenList: any) => {
-      if (tokenList) {
-        setSplTokenData(() => tokenList.filter((t: any) => t !== undefined));
-      }
-    });
-    return () => {
-      setAccountInfo("");
-    };
+    if (wallet.connected) {
+      getSPLTokenData(wallet, connection).then((tokenList: ISplToken[]) => {
+        if (tokenList) {
+          setSplTokenData(() => tokenList.filter(t => t !== undefined));
+        }
+      });
+    }
   }, [wallet.connected]);
 
-  const updateAmount = (e: any) => {
+  const updateAmount = (e: IUpdateAmountData) => {
     if (e.type === "From") {
-      setFromData((old: any) => ({
+      setFromData((old: TokenData) => ({
         ...old,
         amount: e.amount
       }));
 
-      if (e.amount === "") {
-        setToData((old: any) => ({
+      if (!e.amount) {
+        setToData((old: TokenData) => ({
           ...old,
           amount: 0
         }));
@@ -99,7 +89,7 @@ const SwapPage: FunctionComponent = () => {
 
   const updateSwapOutAmount = () => {
     if (
-      fromData.amount > 0 &&
+      fromData.amount! > 0 &&
       fromData.tokenInfo?.symbol &&
       toData.tokenInfo?.symbol
     ) {
@@ -108,7 +98,7 @@ const SwapPage: FunctionComponent = () => {
         toData.tokenInfo.mintAddress
       );
       if (!poolInfo) {
-        setNotify((old: any) => ({
+        setNotify((old: INotify) => ({
           ...old,
           status: "error",
           title: "AMM error",
@@ -126,13 +116,13 @@ const SwapPage: FunctionComponent = () => {
         parsedPoolInfo,
         fromData.tokenInfo.mintAddress,
         toData.tokenInfo.mintAddress,
-        fromData.amount.toString(),
+        fromData.amount!.toString(),
         slippageValue
       );
 
-      setToData((old: any) => ({
+      setToData((old: TokenData) => ({
         ...old,
-        amount: amountOutWithSlippage.fixed()
+        amount: parseFloat(amountOutWithSlippage.fixed())
       }));
     }
   };
@@ -145,6 +135,10 @@ const SwapPage: FunctionComponent = () => {
     updateSwapOutAmount();
   }, [toData.tokenInfo?.symbol]);
 
+  useEffect(() => {
+    updateSwapOutAmount();
+  }, [slippageValue]);
+
   const toggleTokenList = (e: any) => {
     setShowTokenList(() => !showTokenList);
     setSelectType(() => e);
@@ -154,52 +148,60 @@ const SwapPage: FunctionComponent = () => {
     setShowSlippageSetting(() => !showSlippageSetting);
   };
 
-  const getSlippageValue = (e: any) => {
-    if (e === "") {
+  const getSlippageValue = (e: number) => {
+    if (!e) {
       setSlippageValue(() => e);
     } else {
-      setSlippageValue(() => parseFloat(e));
+      setSlippageValue(() => e);
     }
   };
 
   const switchFromAndTo = () => {
     const fromToken = fromData.tokenInfo;
     const toToken = toData.tokenInfo;
-    setFromData((old: any) => ({
+    setFromData((old: TokenData) => ({
       ...old,
       tokenInfo: toToken,
-      amount: ""
+      amount: null
     }));
 
-    setToData((old: any) => ({
+    setToData((old: TokenData) => ({
       ...old,
       tokenInfo: fromToken,
-      amount: ""
+      amount: null
     }));
   };
 
   const getTokenInfo = (e: any) => {
     if (selectType === "From") {
       if (toData.tokenInfo?.symbol === e?.symbol) {
-        setToData((old: any) => ({
+        setToData((old: TokenData) => ({
           ...old,
-          tokenInfo: ""
+          tokenInfo: {
+            symbol: "",
+            mintAddress: "",
+            logoURI: ""
+          }
         }));
       }
 
-      setFromData((old: any) => ({
+      setFromData((old: TokenData) => ({
         ...old,
         tokenInfo: e
       }));
     } else {
       if (fromData.tokenInfo?.symbol === e.symbol) {
-        setFromData((old: any) => ({
+        setFromData((old: TokenData) => ({
           ...old,
-          tokenInfo: ""
+          tokenInfo: {
+            symbol: "",
+            mintAddress: "",
+            logoURI: ""
+          }
         }));
       }
 
-      setToData((old: any) => ({
+      setToData((old: TokenData) => ({
         ...old,
         tokenInfo: e
       }));
@@ -213,7 +215,8 @@ const SwapPage: FunctionComponent = () => {
     );
 
     let fromTokenAccount: ISplToken | undefined | string = splTokenData.find(
-      (token: any) => token.parsedInfo.mint === fromData.tokenInfo.mintAddress
+      (token: ISplToken) =>
+        token.parsedInfo.mint === fromData.tokenInfo.mintAddress
     );
     if (fromTokenAccount) {
       fromTokenAccount = fromTokenAccount.pubkey;
@@ -222,7 +225,8 @@ const SwapPage: FunctionComponent = () => {
     }
 
     let toTokenAccount: ISplToken | undefined | string = splTokenData.find(
-      (token: any) => token.parsedInfo.mint === toData.tokenInfo.mintAddress
+      (token: ISplToken) =>
+        token.parsedInfo.mint === toData.tokenInfo.mintAddress
     );
     if (toTokenAccount) {
       toTokenAccount = toTokenAccount.pubkey;
@@ -230,15 +234,15 @@ const SwapPage: FunctionComponent = () => {
       toTokenAccount = "";
     }
 
-    let wsol: any = splTokenData.find(
-      (token: any) =>
-        token.mint === "So11111111111111111111111111111111111111112"
+    let wsol: ISplToken | undefined = splTokenData.find(
+      (token: ISplToken) =>
+        token.parsedInfo.mint === "So11111111111111111111111111111111111111112"
     );
+    let wsolMint: string = "";
     if (wsol) {
-      wsol = wsol.mint;
-    } else {
-      wsol = "";
+      wsolMint = wsol.parsedInfo.mint;
     }
+
     if (poolInfo === undefined) {
       alert("Pool not exist");
       return;
@@ -252,12 +256,12 @@ const SwapPage: FunctionComponent = () => {
       toData.tokenInfo.mintAddress,
       fromTokenAccount,
       toTokenAccount,
-      fromData.amount.toString(),
-      toData.amount.toString(),
-      wsol
+      fromData.amount!.toString(),
+      toData.amount!.toString(),
+      wsolMint
     ).then(async res => {
       toggleNotify(true);
-      setNotify((old: any) => ({
+      setNotify((old: INotify) => ({
         ...old,
         status: "success",
         title: "Transaction Send",
@@ -268,13 +272,13 @@ const SwapPage: FunctionComponent = () => {
       let result = await connection.confirmTransaction(res);
 
       if (!result.value.err) {
-        setNotify((old: any) => ({
+        setNotify((old: INotify) => ({
           ...old,
           status: "success",
           title: "Transaction Success"
         }));
       } else {
-        setNotify((old: any) => ({
+        setNotify((old: INotify) => ({
           ...old,
           status: "success",
           title: "Fail",
@@ -283,9 +287,11 @@ const SwapPage: FunctionComponent = () => {
         }));
       }
 
-      getSPLTokenData(wallet, connection).then((tokenList: any) => {
+      getSPLTokenData(wallet, connection).then((tokenList: ISplToken[]) => {
         if (tokenList) {
-          setSplTokenData(() => tokenList.filter((t: any) => t !== undefined));
+          setSplTokenData(() =>
+            tokenList.filter((t: ISplToken) => t !== undefined)
+          );
         }
       });
     });
@@ -301,22 +307,22 @@ const SwapPage: FunctionComponent = () => {
 
   useEffect(() => {
     if (wallet.connected) {
-      setNotify((old: any) => ({
+      setNotify((old: INotify) => ({
         ...old,
         status: "success",
         title: "Wallet connected",
-        description: wallet.publicKey?.toBase58()
+        description: wallet.publicKey?.toBase58() as string
       }));
     } else {
       let description = wallet.publicKey?.toBase58();
       if (!description) {
         description = "Please try again";
       }
-      setNotify((old: any) => ({
+      setNotify((old: INotify) => ({
         ...old,
         status: "error",
         title: "Wallet disconnected",
-        description
+        description: description as string
       }));
     }
 
@@ -348,17 +354,24 @@ const SwapPage: FunctionComponent = () => {
         {isLoading ? (
           ""
         ) : (
-          <SwapOperateContainer
-            toggleTokenList={toggleTokenList}
-            fromData={fromData}
-            toData={toData}
-            updateAmount={updateAmount}
-            switchFromAndTo={switchFromAndTo}
-            slippageValue={slippageValue}
-            accountInfo={accountInfo}
-            sendSwapTransaction={sendSwapTransaction}
-            splTokenData={splTokenData}
-          />
+          <>
+            <TitleRow
+              toggleSlippageSetting={toggleSlippageSetting}
+              fromData={fromData}
+              toData={toData}
+              updateSwapOutAmount={updateSwapOutAmount}
+            />
+            <SwapOperateContainer
+              toggleTokenList={toggleTokenList}
+              fromData={fromData}
+              toData={toData}
+              updateAmount={updateAmount}
+              switchFromAndTo={switchFromAndTo}
+              slippageValue={slippageValue}
+              sendSwapTransaction={sendSwapTransaction}
+              splTokenData={splTokenData}
+            />
+          </>
         )}
       </div>
       {showNotify ? <Notify message={notify} /> : null}
