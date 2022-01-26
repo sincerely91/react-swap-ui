@@ -13,7 +13,9 @@ interface SplTokenDisplayData {
   amount: number;
 }
 
-const SplToken: FunctionComponent<ISplTokenProps> = (props): JSX.Element => {
+const SplTokenList: FunctionComponent<ISplTokenProps> = (
+  props
+): JSX.Element => {
   let tokenList: any = [];
   if (props.splTokenData.length === 0) {
     return <></>;
@@ -42,7 +44,7 @@ const SplToken: FunctionComponent<ISplTokenProps> = (props): JSX.Element => {
           </span>
           <span>- {item.amount}</span>
         </div>
-        <div style={{ opacity: ".2" }}>
+        <div style={{ opacity: ".25" }}>
           <div>Mint: {item.mint}</div>
           <div>Pubkey: {item.pubkey}</div>
         </div>
@@ -58,4 +60,4 @@ const SplToken: FunctionComponent<ISplTokenProps> = (props): JSX.Element => {
   );
 };
 
-export default SplToken;
+export default SplTokenList;
