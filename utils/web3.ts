@@ -11,7 +11,8 @@ import {
   TransactionSignature,
   Transaction,
   SystemProgram,
-  AccountInfo
+  AccountInfo,
+  LAMPORTS_PER_SOL
 } from "@solana/web3.js";
 
 import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from "./ids";
@@ -334,7 +335,9 @@ export const getSPLTokenData = async (
     "confirmed"
   );
 
-  return res.value.map(item => {
+  let data = await connection.getAccountInfo(wallet.publicKey!);
+  console.log(data, "////");
+  let list = res.value.map(item => {
     let token = {
       pubkey: item.pubkey.toBase58(),
       parsedInfo: item.account.data.parsed.info,
@@ -349,4 +352,14 @@ export const getSPLTokenData = async (
       return token;
     }
   });
+  list.push({
+    //@ts-ignore
+    pubkey: wallet.publicKey?.toBase58(),
+    parsedInfo: {
+      mint: data?.owner.toBase58()
+    },
+    //@ts-ignore
+    amount: data?.lamports / LAMPORTS_PER_SOL
+  });
+  return list;
 };

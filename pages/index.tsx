@@ -24,6 +24,7 @@ const Home: NextPage = () => {
           textAlign: "center"
         }}
       >
+        <br />
         Your Solana Wonderland
       </div>
     </div>

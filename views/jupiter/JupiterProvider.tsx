@@ -2,7 +2,10 @@ import { FunctionComponent } from "react";
 import { JupiterProvider } from "@jup-ag/react-hook";
 import { Connection } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";
-const connection = new Connection("https://rpc-mainnet-fork.dappio.xyz");
+const connection = new Connection("https://rpc-mainnet-fork.dappio.xyz", {
+  wsEndpoint: "wss://rpc-mainnet-fork.dappio.xyz/ws",
+  commitment: "processed"
+});
 
 const Jupiter: FunctionComponent = ({ children }) => {
   const wallet = useWallet();
@@ -12,7 +15,6 @@ const Jupiter: FunctionComponent = ({ children }) => {
       cluster="mainnet-beta"
       userPublicKey={wallet.publicKey || undefined}
     >
-      <h4>{wallet.publicKey?.toBase58()}</h4>
       {children}
     </JupiterProvider>
   );

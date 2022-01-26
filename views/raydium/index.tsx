@@ -2,14 +2,14 @@ import { useState, useEffect, FunctionComponent } from "react";
 import TokenList from "./TokenList";
 import SlippageSetting from "./SlippageSetting";
 import SwapOperateContainer from "./SwapOperateContainer";
-import { PublicKey } from "@solana/web3.js";
+import { PublicKey, Connection } from "@solana/web3.js";
 import { Spinner } from "@chakra-ui/react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { getPoolByTokenMintAddresses } from "../../utils/pools";
 import { swap, getSwapOutAmount, setupPools } from "../../utils/swap";
 import { getSPLTokenData } from "../../utils/web3";
 import Notify from "../commons/Notify";
-import SPLToken from "../commons/SPLToken";
+import SplToken from "../commons/SplToken";
 import { ISplToken } from "../../utils/web3";
 import style from "../../styles/swap.module.sass";
 export interface TokenData {
@@ -44,7 +44,10 @@ const SwapPage: FunctionComponent = () => {
   const [showNotify, toggleNotify] = useState<Boolean>(false);
 
   let wallet: any = useWallet();
-  const { connection } = useConnection();
+  const connection = new Connection("https://rpc-mainnet-fork.dappio.xyz", {
+    wsEndpoint: "wss://rpc-mainnet-fork.dappio.xyz/ws",
+    commitment: "processed"
+  });
 
   useEffect(() => {
     setIsLoading(true);
@@ -252,7 +255,7 @@ const SwapPage: FunctionComponent = () => {
       fromData.amount.toString(),
       toData.amount.toString(),
       wsol
-    ).then(res => {
+    ).then(async res => {
       toggleNotify(true);
       setNotify((old: any) => ({
         ...old,
@@ -262,12 +265,29 @@ const SwapPage: FunctionComponent = () => {
         link: `https://explorer.solana.com/address/${res}`
       }));
 
+      let result = await connection.confirmTransaction(res);
+
+      if (!result.value.err) {
+        setNotify((old: any) => ({
+          ...old,
+          status: "success",
+          title: "Transaction Success"
+        }));
+      } else {
+        setNotify((old: any) => ({
+          ...old,
+          status: "success",
+          title: "Fail",
+          description: "Transaction fail, please check below link",
+          link: `https://explorer.solana.com/address/${res}`
+        }));
+      }
+
       getSPLTokenData(wallet, connection).then((tokenList: any) => {
         if (tokenList) {
           setSplTokenData(() => tokenList.filter((t: any) => t !== undefined));
         }
       });
-      getAccountInfo();
     });
   };
 
@@ -312,7 +332,7 @@ const SwapPage: FunctionComponent = () => {
       ) : (
         ""
       )}
-      <SPLToken splTokenData={splTokenData} />
+      <SplToken splTokenData={splTokenData} />
       <SlippageSetting
         showSlippageSetting={showSlippageSetting}
         toggleSlippageSetting={toggleSlippageSetting}

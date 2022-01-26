@@ -6,7 +6,8 @@ import { useJupiter } from "@jup-ag/react-hook";
 import { ENV as ENVChainId } from "@solana/spl-token-registry";
 import FeeInfo from "./FeeInfo";
 import { getSPLTokenData } from "../../utils/web3";
-import SPLToken from "../commons/SPLToken";
+import SPLToken from "../commons/SplToken";
+import style from "../../styles/jupiter.module.sass";
 
 const CHAIN_ID = ENVChainId.MainnetBeta;
 interface IJupiterFormProps {}
@@ -134,10 +135,12 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = props => {
       <div>
         <SPLToken splTokenData={splTokenData} />
       </div>
-      <div>
-        <div>
+      <div className={style.jupiterFormModal}>
+        <div className={style.title}>Jupiter</div>
+        <div className={style.selectBlock}>
           <label htmlFor="inputMint">Input token</label>
           <select
+            className={style.select}
             id="inputMint"
             name="inputMint"
             value={formValue.inputMint?.toBase58()}
@@ -161,9 +164,10 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = props => {
           </select>
         </div>
 
-        <div>
+        <div className={style.selectBlock}>
           <label htmlFor="outputMint">Output token</label>
           <select
+            className={style.select}
             id="outputMint"
             name="outputMint"
             value={formValue.outputMint?.toBase58()}
@@ -193,6 +197,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = props => {
           </label>
           <div>
             <input
+              className={style.input}
               name="amount"
               id="amount"
               value={formValue.amount}
@@ -209,11 +214,14 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = props => {
             />
           </div>
         </div>
-        <div>
-          <button type="button" onClick={refresh} disabled={loading}>
-            {loading ? "Loading" : "Refresh rate"}
-          </button>
-        </div>
+        <button
+          className={style.operateBtn}
+          type="button"
+          onClick={refresh}
+          disabled={loading}
+        >
+          {loading ? "Loading" : "Refresh rate"}
+        </button>
 
         <div>Total routes: {routes?.length}</div>
 
@@ -238,40 +246,46 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = props => {
 
         {error && <div>Error in Jupiter, try changing your input</div>}
 
-        <div>
-          <button
-            type="button"
-            disabled={loading}
-            onClick={async () => {
-              if (
-                !loading &&
-                routes?.[0] &&
-                wallet.signAllTransactions &&
-                wallet.signTransaction &&
-                wallet.sendTransaction &&
-                wallet.publicKey
-              ) {
-                await exchange({
-                  wallet: {
-                    sendTransaction: wallet.sendTransaction,
-                    publicKey: wallet.publicKey,
-                    signAllTransactions: wallet.signAllTransactions,
-                    signTransaction: wallet.signTransaction
-                  },
-                  route: routes[0],
-                  confirmationWaiterFactory: async txid => {
-                    await connection.confirmTransaction(txid);
-                    return await connection.getTransaction(txid, {
-                      commitment: "confirmed"
-                    });
-                  }
-                });
-              }
-            }}
-          >
-            Swap Best Route
-          </button>
-        </div>
+        <button
+          className={`${style.operateBtn} ${style.swapBtn}`}
+          type="button"
+          disabled={loading}
+          onClick={async () => {
+            if (
+              !loading &&
+              routes?.[0] &&
+              wallet.signAllTransactions &&
+              wallet.signTransaction &&
+              wallet.sendTransaction &&
+              wallet.publicKey
+            ) {
+              await exchange({
+                wallet: {
+                  sendTransaction: wallet.sendTransaction,
+                  publicKey: wallet.publicKey,
+                  signAllTransactions: wallet.signAllTransactions,
+                  signTransaction: wallet.signTransaction
+                },
+                route: routes[0],
+                confirmationWaiterFactory: async txid => {
+                  await connection.confirmTransaction(txid);
+                  getSPLTokenData(wallet, connection).then((tokenList: any) => {
+                    if (tokenList) {
+                      setSplTokenData(() =>
+                        tokenList.filter((t: any) => t !== undefined)
+                      );
+                    }
+                  });
+                  return await connection.getTransaction(txid, {
+                    commitment: "confirmed"
+                  });
+                }
+              });
+            }
+          }}
+        >
+          Swap Best Route
+        </button>
       </div>
     </div>
   );

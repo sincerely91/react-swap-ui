@@ -1,21 +1,34 @@
+import { FunctionComponent } from "react";
 import style from "../../styles/swap.module.sass";
 import { TOKENS } from "../../utils/tokens";
+import { ISplToken } from "../../utils/web3";
+interface ISplTokenProps {
+  splTokenData: ISplToken[];
+}
 
-const SPLToken = (props: any): JSX.Element => {
+interface SplTokenDisplayData {
+  symbol: string;
+  mint: string;
+  pubkey: string;
+  amount: number;
+}
+
+const SplToken: FunctionComponent<ISplTokenProps> = (props): JSX.Element => {
   let tokenList: any = [];
   if (props.splTokenData.length === 0) {
     return <></>;
   }
 
   for (const [_, value] of Object.entries(TOKENS)) {
-    let token = props.splTokenData.find(
+    let spl: ISplToken | undefined = props.splTokenData.find(
       (t: any) => t.parsedInfo.mint === value.mintAddress
     );
-    if (token) {
+    if (spl) {
+      let token = {} as SplTokenDisplayData;
       token["symbol"] = value.symbol;
-      token["mint"] = token?.parsedInfo.mint;
-      token["pubkey"] = token?.pubkey;
-      token["amount"] = token?.amount;
+      token["mint"] = spl?.parsedInfo.mint;
+      token["pubkey"] = spl?.pubkey;
+      token["amount"] = spl?.amount;
       tokenList.push(token);
     }
   }
@@ -23,10 +36,16 @@ const SPLToken = (props: any): JSX.Element => {
   let tokens = tokenList.map((item: any) => {
     return (
       <div key={item.mint} className={style.splTokenItem}>
-        <div>Symbol: {item.symbol}</div>
-        <div>Mint: {item.mint}</div>
-        <div>Pubkey: {item.pubkey}</div>
-        <div>Amount: {item.amount}</div>
+        <div>
+          <span style={{ marginRight: "1rem", fontWeight: "600" }}>
+            {item.symbol}
+          </span>
+          <span>- {item.amount}</span>
+        </div>
+        <div style={{ opacity: ".2" }}>
+          <div>Mint: {item.mint}</div>
+          <div>Pubkey: {item.pubkey}</div>
+        </div>
       </div>
     );
   });
@@ -39,4 +58,4 @@ const SPLToken = (props: any): JSX.Element => {
   );
 };
 
-export default SPLToken;
+export default SplToken;

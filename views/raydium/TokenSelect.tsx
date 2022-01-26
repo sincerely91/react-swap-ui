@@ -1,6 +1,6 @@
 import { FunctionComponent, useEffect, useState } from "react";
 import { ArrowDownIcon } from "@chakra-ui/icons";
-import { AccountInfo, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { AccountInfo } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { TokenData } from "./index";
 import { ISplToken } from "../../utils/web3";
@@ -25,6 +25,7 @@ interface SelectTokenProps {
 const TokenSelect: FunctionComponent<TokenSelectProps> = props => {
   let wallet = useWallet();
   const [tokenBalance, setTokenBalance] = useState<number | null>(null);
+
   const updateAmount = (e: any) => {
     e.preventDefault();
 
@@ -52,7 +53,7 @@ const TokenSelect: FunctionComponent<TokenSelectProps> = props => {
       }
     };
     getTokenBalance();
-  }, [props.tokenData.tokenInfo]);
+  }, [props.splTokenData]);
 
   const SelectTokenBtn: FunctionComponent<
     SelectTokenProps
@@ -92,12 +93,6 @@ const TokenSelect: FunctionComponent<TokenSelectProps> = props => {
           {wallet.connected && tokenBalance
             ? `Balance: ${tokenBalance.toFixed(4)}`
             : ""}
-          {wallet.connected && props.tokenData.tokenInfo?.symbol === "SOL"
-            ? `Balance: ${(props?.accountInfo?.lamports > 0
-                ? props?.accountInfo?.lamports / LAMPORTS_PER_SOL
-                : 0
-              ).toFixed(4)}`
-            : null}
         </div>
       </div>
       <div className={style.coinAmountRow}>

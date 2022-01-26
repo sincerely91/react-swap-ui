@@ -14,11 +14,7 @@ const Navigator: FunctionComponent = () => {
     <div className={style.sidebar}>
       <div className={style.routesBlock}>
         <Link href="/" passHref>
-          <img
-            src="https://dappio.xyz/_nuxt/img/logo_v4.eb14d4f.png"
-            alt=""
-            className={style.dappioLogo}
-          />
+          <img src="/dappio-logo.png" alt="logo" className={style.dappioLogo} />
         </Link>
         <Link href="/jupiter">
           <a className={style.route}>Jupiter</a>
