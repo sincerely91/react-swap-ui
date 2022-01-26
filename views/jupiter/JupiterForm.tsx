@@ -5,7 +5,7 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { useJupiter } from "@jup-ag/react-hook";
 import { ENV as ENVChainId } from "@solana/spl-token-registry";
 import FeeInfo from "./FeeInfo";
-import { getSPLTokenData } from "../../utils/web3";
+import { getSPLTokenData, ISplToken } from "../../utils/web3";
 import SplTokenList from "../commons/SplTokenList";
 import style from "../../styles/jupiter.module.sass";
 

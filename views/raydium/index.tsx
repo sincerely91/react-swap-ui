@@ -28,7 +28,7 @@ export interface AccountInfo {
 const SwapPage: FunctionComponent = () => {
   const [showTokenList, setShowTokenList] = useState(false);
   const [showSlippageSetting, setShowSlippageSetting] = useState(false);
-  const [selectType, setSelectType] = useState<any>("From");
+  const [selectType, setSelectType] = useState<string>("From");
   const [fromData, setFromData] = useState<TokenData>({} as TokenData);
   const [toData, setToData] = useState<TokenData>({} as TokenData);
   const [slippageValue, setSlippageValue] = useState(1);

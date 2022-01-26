@@ -313,7 +313,6 @@ export async function createAmmAuthority(programId: PublicKey) {
     programId
   );
 }
-
 export interface ISplToken {
   pubkey: string;
   parsedInfo: any;
@@ -336,7 +335,7 @@ export const getSPLTokenData = async (
   );
 
   let data = await connection.getAccountInfo(wallet.publicKey!);
-  let list = res.value.map(item => {
+  let list: (ISplToken | undefined)[] = res.value.map(item => {
     let token = {
       pubkey: item.pubkey.toBase58(),
       parsedInfo: item.account.data.parsed.info,

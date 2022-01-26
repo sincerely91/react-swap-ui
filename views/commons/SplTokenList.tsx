@@ -2,6 +2,7 @@ import { FunctionComponent } from "react";
 import style from "../../styles/swap.module.sass";
 import { TOKENS } from "../../utils/tokens";
 import { ISplToken } from "../../utils/web3";
+
 interface ISplTokenProps {
   splTokenData: ISplToken[];
 }
@@ -16,14 +17,14 @@ interface SplTokenDisplayData {
 const SplTokenList: FunctionComponent<ISplTokenProps> = (
   props
 ): JSX.Element => {
-  let tokenList: any = [];
+  let tokenList: SplTokenDisplayData[] = [];
   if (props.splTokenData.length === 0) {
     return <></>;
   }
 
   for (const [_, value] of Object.entries(TOKENS)) {
     let spl: ISplToken | undefined = props.splTokenData.find(
-      (t: any) => t.parsedInfo.mint === value.mintAddress
+      (t: ISplToken) => t.parsedInfo.mint === value.mintAddress
     );
     if (spl) {
       let token = {} as SplTokenDisplayData;
@@ -35,7 +36,7 @@ const SplTokenList: FunctionComponent<ISplTokenProps> = (
     }
   }
 
-  let tokens = tokenList.map((item: any) => {
+  let tokens = tokenList.map((item: SplTokenDisplayData) => {
     return (
       <div key={item.mint} className={style.splTokenItem}>
         <div>
