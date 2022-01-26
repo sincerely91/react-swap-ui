@@ -6,7 +6,7 @@ import { useJupiter } from "@jup-ag/react-hook";
 import { ENV as ENVChainId } from "@solana/spl-token-registry";
 import FeeInfo from "./FeeInfo";
 import { getSPLTokenData } from "../../utils/web3";
-import SPLToken from "../commons/SplToken";
+import SplToken from "../commons/SplToken";
 import style from "../../styles/jupiter.module.sass";
 
 const CHAIN_ID = ENVChainId.MainnetBeta;
@@ -133,7 +133,7 @@ const JupiterForm: FunctionComponent<IJupiterFormProps> = props => {
   return (
     <div style={{ display: "flex" }}>
       <div>
-        <SPLToken splTokenData={splTokenData} />
+        <SplToken splTokenData={splTokenData} />
       </div>
       <div className={style.jupiterFormModal}>
         <div className={style.title}>Jupiter</div>

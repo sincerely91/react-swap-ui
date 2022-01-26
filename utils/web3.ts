@@ -336,7 +336,6 @@ export const getSPLTokenData = async (
   );
 
   let data = await connection.getAccountInfo(wallet.publicKey!);
-  console.log(data, "////");
   let list = res.value.map(item => {
     let token = {
       pubkey: item.pubkey.toBase58(),

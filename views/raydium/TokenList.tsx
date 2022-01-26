@@ -8,7 +8,7 @@ interface TokenListProps {
   showTokenList: boolean;
   toggleTokenList: (event?: React.MouseEvent<HTMLDivElement>) => void;
   getTokenInfo: Function;
-};
+}
 
 const TokenList: FunctionComponent<TokenListProps> = props => {
   const [initialList, setList] = useState<any>([]);
@@ -35,7 +35,7 @@ const TokenList: FunctionComponent<TokenListProps> = props => {
         }
       });
       setList(() => list);
-      props.getTokenInfo(list.find((item: any) => item.symbol === "SOL")); // 預設顯示 SOL
+      props.getTokenInfo(list.find((item: any) => item.symbol === "SOL"));
     });
   }, []);
 
@@ -63,10 +63,7 @@ const TokenList: FunctionComponent<TokenListProps> = props => {
           key={item.address}
           onClick={() => setTokenInfo(item)}
         >
-          <img
-            src={item.logoURI}
-            alt=""
-            className={style.tokenLogo} />
+          <img src={item.logoURI} alt="" className={style.tokenLogo} />
           <div>{item.symbol}</div>
         </div>
       );
