@@ -9,7 +9,7 @@ import { getPoolByTokenMintAddresses } from "../../utils/pools";
 import { swap, getSwapOutAmount, setupPools } from "../../utils/swap";
 import { getSPLTokenData } from "../../utils/web3";
 import Notify from "../commons/Notify";
-import SplToken from "../commons/SplToken";
+import SplTokenList from "../commons/SplTokenList";
 import { ISplToken } from "../../utils/web3";
 import style from "../../styles/swap.module.sass";
 export interface TokenData {
@@ -332,7 +332,7 @@ const SwapPage: FunctionComponent = () => {
       ) : (
         ""
       )}
-      <SplToken splTokenData={splTokenData} />
+      <SplTokenList splTokenData={splTokenData} />
       <SlippageSetting
         showSlippageSetting={showSlippageSetting}
         toggleSlippageSetting={toggleSlippageSetting}
