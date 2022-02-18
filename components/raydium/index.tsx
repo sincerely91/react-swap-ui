@@ -19,7 +19,7 @@ const SwapPage: FunctionComponent = () => {
   const [liquidityPools, setLiquidityPools] = useState<any>("");
                                                                             // Other Hooks
   let wallet = useWallet();
-  let { connection, splTokens, notify, setNotify, setLoading } = useDapp()
+  let { connection, splTokens, setNotify, setLoading } = useDapp()
 
   useEffect(()=>{
     splTokens && setSplTokenData(splTokens)
