@@ -1,5 +1,5 @@
 {
-  "name": "swap-ui-example",
+  "name": "project60_solana_dapp",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -39,6 +39,6 @@
     "typescript": "4.5.5"
   },
   "resolutions": {
-    "@solana/buffer-layout": "3.0.0"
+    "@solana/buffer-layout": "^3.0.0"
   }
 }

@@ -1,4 +1,4 @@
-import { FunctionComponent } from "react";
+import { FC } from "react";
 import { ArrowUpDownIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
 import { Tooltip } from "@chakra-ui/react";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -6,31 +6,10 @@ import {
   WalletModalProvider,
   WalletMultiButton
 } from "@solana/wallet-adapter-react-ui";
-import { TokenData } from ".";
 import TokenSelect from "./TokenSelect";
-import { ISplToken } from "../../utils/web3";
 import style from "../../styles/swap.module.sass";
 
-interface SwapOperateContainerProps {
-  toggleTokenList: Function;
-  fromData: TokenData;
-  toData: TokenData;
-  updateAmount: Function;
-  switchFromAndTo: (event?: React.MouseEvent<HTMLDivElement>) => void;
-  slippageValue: number;
-  sendSwapTransaction: (event?: React.MouseEvent<HTMLButtonElement>) => void;
-  splTokenData: ISplToken[];
-}
-
-interface SwapDetailProps {
-  title: string;
-  tooltipContent: string;
-  value: string;
-}
-
-const SwapOperateContainer: FunctionComponent<
-  SwapOperateContainerProps
-> = props => {
+const SwapOperateContainer: FC<SwapOperateContainerProps> = props => {
   let wallet = useWallet();
   const SwapBtn = (swapProps: any) => {
     if (wallet.connected) {
@@ -85,7 +64,7 @@ const SwapOperateContainer: FunctionComponent<
     }
   };
 
-  const SwapDetailPreview: FunctionComponent<SwapDetailProps> = props => {
+  const SwapDetailPreview: FC<SwapDetailProps> = props => {
     return (
       <div className={style.slippageRow}>
         <div className={style.slippageTooltipBlock}>

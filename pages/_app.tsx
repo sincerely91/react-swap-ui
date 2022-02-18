@@ -1,42 +1,58 @@
-import type { AppProps } from "next/app";
-import { Wallet } from "../views/commons/WalletProvider";
-import Navigator from "../views/commons/Navigator";
-import "../styles/globals.css";
-import Head from "next/head";
+import '../styles/globals.css'
+import type { AppProps } from 'next/app'
+// import { Wallet } from '../components/common/WalletProvider'
+import { ChakraProvider } from '@chakra-ui/react'
+import Layout from '../components/layout'
 
-function SwapUI({ Component, pageProps }: AppProps) {
-  return (
-    <>
-      <Head>
-        <title>swap-ui-example</title>
-        <meta name="description" content="Your Solana Wonderland" />
-        <meta property="og:title" content="Dappio" />
-        <meta property="og:description" content="Your Solana Wonderland" />
-        <meta property="og:url" content="https://swap-ui-example.dappio.xyz/" />
-        <meta
-          property="og:image"
-          content="https://swap-ui-example.dappio.xyz/og-image.png"
-        />
-        <meta property="twitter:title" content="Dappio" />
-        <meta property="twitter:description" content="Your Solana Wonderland" />
-        <meta property="twitter:site" content="@Dappio_" />
-        <meta
-          property="twitter:url"
-          content="https://swap-ui-example.dappio.xyz"
-        />
-        <meta property="twitter:creator" content="@Dappio_" />
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta
-          property="twitter:image"
-          content="https://swap-ui-example.dappio.xyz/og-image.png"
-        />
-      </Head>
-      <Wallet>
-        <Navigator />
-        <Component {...pageProps} />
-      </Wallet>
-    </>
+import { ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react";
+import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
+import {
+  LedgerWalletAdapter,
+  PhantomWalletAdapter,
+  SlopeWalletAdapter,
+  SolflareWalletAdapter,
+  SolletExtensionWalletAdapter,
+  SolletWalletAdapter,
+  TorusWalletAdapter
+} from "@solana/wallet-adapter-wallets";
+import { useMemo } from 'react'
+// import { clusterApiUrl } from "@solana/web3.js";
+
+// Default styles that can be overridden by your app
+require("@solana/wallet-adapter-react-ui/styles.css");
+
+function MyApp({ Component, pageProps }: AppProps) {
+  // // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
+  const network = WalletAdapterNetwork.Mainnet;
+
+  // // You can also provide a custom RPC endpoint.
+  const endpoint = "https://rpc-mainnet-fork.dappio.xyz";
+
+  // @solana/wallet-adapter-wallets includes all the adapters but supports tree shaking and lazy loading --
+  // Only the wallets you configure here will be compiled into your application, and only the dependencies
+  // of wallets that your users connect to will be loaded.
+  const wallets = useMemo(
+      () => [
+          new PhantomWalletAdapter(),
+          new SlopeWalletAdapter(),
+          new SolflareWalletAdapter(),
+          new TorusWalletAdapter(),
+          new LedgerWalletAdapter(),
+          new SolletWalletAdapter({ network }),
+          new SolletExtensionWalletAdapter({ network })
+      ],
+      [network]
   );
+  
+  return <ConnectionProvider endpoint={endpoint}>
+      <WalletProvider wallets={wallets} autoConnect>
+        <ChakraProvider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </ChakraProvider>
+      </WalletProvider>
+    </ConnectionProvider>
 }
 
-export default SwapUI;
+export default MyApp

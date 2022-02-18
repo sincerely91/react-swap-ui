@@ -3,12 +3,12 @@ import { closeAccount } from "@project-serum/serum/lib/token-instructions";
 import { OpenOrders } from "@project-serum/serum";
 // import { _OPEN_ORDERS_LAYOUT_V2} from '@project-serum/serum/lib/market';
 import {
-  Account,
   Connection,
   PublicKey,
   Transaction,
   TransactionInstruction,
-  AccountInfo
+  AccountInfo,
+  Keypair
 } from "@solana/web3.js";
 // @ts-ignore
 import { nu64, struct, u8 } from "buffer-layout";
@@ -31,10 +31,11 @@ import {
   getTokenByMintAddress,
   NATIVE_SOL,
   TOKENS,
-  TokenInfo,
+  // TokenInfo,
   LP_TOKENS
 } from "./tokens";
-import { getAddressForWhat, LIQUIDITY_POOLS, LiquidityPoolInfo } from "./pools";
+// import { getAddressForWhat, LIQUIDITY_POOLS, LiquidityPoolInfo } from "./pools";
+import { getAddressForWhat, LIQUIDITY_POOLS} from "./pools";
 import {
   AMM_INFO_LAYOUT,
   AMM_INFO_LAYOUT_STABLE,
@@ -132,7 +133,7 @@ export async function swap(
   wsolAddress: string
 ) {
   const transaction = new Transaction();
-  const signers: Account[] = [];
+  const signers: Keypair[] = [];
 
   const owner = wallet.publicKey;
 
@@ -396,15 +397,19 @@ export async function setupPools(conn: Connection) {
       item.accountInfo.data
     );
   });
-
   const lpMintAddressList: string[] = [];
   ammAll.forEach(item => {
     const ammLayout = AMM_INFO_LAYOUT_V4.decode(
       Buffer.from(item.accountInfo.data)
     );
+    console.log("\n",ammLayout.serumMarket.toString())                                    // Serum Dex Program v3 
+    console.log(ammLayout.coinMintAddress.toString())                                     // coin Mint Address
+    console.log(ammLayout.pcMintAddress.toString())                                       // Pair Coin Mint Address 
+    console.log(ammLayout.lpMintAddress.toString(), "\n")                                 // LP Coin Mint Address
+    
     if (
-      ammLayout.pcMintAddress.toString() === ammLayout.serumMarket.toString() ||
-      ammLayout.lpMintAddress.toString() === "11111111111111111111111111111111"
+      ammLayout.pcMintAddress.toString() === ammLayout.serumMarket.toString() ||          /** How could the pair coin mint be = serum dex program?? */
+      ammLayout.lpMintAddress.toString() === "11111111111111111111111111111111"           /** How could the lp coin mint be = system program?? */
     ) {
       return;
     }
@@ -418,6 +423,7 @@ export async function setupPools(conn: Connection) {
   for (const itemToken of Object.values(TOKENS)) {
     tokenMintData[itemToken.mintAddress] = itemToken;
   }
+                                                                                                /**@TODO combine with prev ammAll.forEach section */
   for (let indexAmmInfo = 0; indexAmmInfo < ammAll.length; indexAmmInfo += 1) {
     const ammInfo = AMM_INFO_LAYOUT_V4.decode(
       Buffer.from(ammAll[indexAmmInfo].accountInfo.data)

@@ -1,29 +1,7 @@
 import { FunctionComponent, useEffect, useState } from "react";
 import { ArrowDownIcon } from "@chakra-ui/icons";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { TokenData } from "./index";
-import { ISplToken } from "../../utils/web3";
 import style from "../../styles/swap.module.sass";
-
-interface TokenSelectProps {
-  type: string;
-  toggleTokenList: Function;
-  tokenData: TokenData;
-  updateAmount: Function;
-  wallet: Object;
-  splTokenData: ISplToken[];
-}
-
-export interface IUpdateAmountData {
-  type: string;
-  amount: number;
-}
-
-interface SelectTokenProps {
-  propsData: {
-    tokenData: TokenData;
-  };
-}
 
 const TokenSelect: FunctionComponent<TokenSelectProps> = props => {
   let wallet = useWallet();
@@ -44,34 +22,34 @@ const TokenSelect: FunctionComponent<TokenSelectProps> = props => {
   };
 
   useEffect(() => {
-    const getTokenBalance = () => {
+    const updateSelectedTokenBalance = () => {
+      console.log(props.tokenData.tokenInfo?.mintAddress)
       let data: ISplToken | undefined = props.splTokenData.find(
         (t: ISplToken) =>
           t.parsedInfo.mint === props.tokenData.tokenInfo?.mintAddress
       );
-
+      console.log(props.splTokenData)
       if (data) {
-        //@ts-ignore
         setTokenBalance(data.amount);
+      } else {
+        setTokenBalance(0);
       }
     };
-    getTokenBalance();
-  }, [props.splTokenData]);
+    updateSelectedTokenBalance();
+  }, [props.tokenData, props.splTokenData]); 
 
-  const SelectTokenBtn: FunctionComponent<
-    SelectTokenProps
-  > = selectTokenProps => {
-    if (selectTokenProps.propsData.tokenData.tokenInfo?.symbol) {
+  const DropDownTokenListBtn: FunctionComponent<dropDownTokenListBtnProps> = selectTokenProps => {
+    if (selectTokenProps.tokenData.tokenInfo?.symbol) {
       return (
         <>
           <img
-            src={selectTokenProps.propsData.tokenData.tokenInfo?.logoURI}
+            src={selectTokenProps.tokenData.tokenInfo?.logoURI}
             alt="logo"
             className={style.img}
           />
           <div className={style.coinNameBlock}>
             <span className={style.coinName}>
-              {selectTokenProps.propsData.tokenData.tokenInfo?.symbol}
+              {selectTokenProps.tokenData.tokenInfo?.symbol}
             </span>
             <ArrowDownIcon w={5} h={5} />
           </div>
@@ -114,7 +92,7 @@ const TokenSelect: FunctionComponent<TokenSelectProps> = props => {
         )}
 
         <div className={style.selectTokenBtn} onClick={selectToken}>
-          <SelectTokenBtn propsData={props} />
+          <DropDownTokenListBtn tokenData={props.tokenData} />
         </div>
       </div>
     </div>
