@@ -15,17 +15,29 @@ a {
   box-sizing: border-box;
 }
 
-html,
-body {
-  font-size: 10px;
-  background-color: rgb(19, 27, 51);
-  color: #eee
+
+.wallet-adapter-button {
+  
 }
 
-.wallet-adapter-modal-list-more {
-  color: #eee
-}
 .wallet-adapter-button-trigger {
   background-color: #fbae21 !important;
-  color: black !important
+  color: black !important;
+  padding: 10px 5px;
+  border-radius: 5px;
+  font-weight: bold;
 }
+
+.btn {
+  margin: 30px
+}
+
+
+.wallet-adapter-modal-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  margin: auto;
+  justify-content: center;
+}
+

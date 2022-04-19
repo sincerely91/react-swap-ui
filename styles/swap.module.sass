@@ -1,64 +1,65 @@
 @import './color.module'
 
-.swapPage
-  position: relative
-  height: calc( 100vh - 7rem )
-  color: $white
-  background-color: $main_blue
-.container
-  position: absolute
-  top: 5rem
-  left: 50%
-  transform: translateX(-50%)
-.titleContainer
-  display: flex
-  align-items: center
-  justify-content: center
-  margin-bottom: 1rem
-  .title
-    flex: 1
-    font-weight: 600
-    font-size: 2.4rem
-  .iconContainer
-    display: flex
-    flex: 2
-    justify-content: flex-end
-  .icon
-    cursor: pointer
-    padding: .5rem
-    border-radius: .5rem
-    margin-left: 1rem
-    &:hover
-      background-color: $coin_select_block_bgc
-  .percentageCircle
-    width: 3rem
-    height: 3rem
-  .circleBg
-    stroke: $white
-    fill: none
-    stroke-width: 4
-  .popover
-    box-shadow: none !important
-    outline: none !important
-  .selectTokenAddressTitle
-    font-size: 1.2rem
-    font-weight: 600
-    color: $placeholder_grey
-    margin: .5rem 0 1rem 0
-  .selectTokenAddress
-    opacity: .7
-    display: flex
-    align-items: center
-    margin-top: .5rem
-    .symbol
-      width: 5rem
-      flex-shrink: 0
-    .address
-      background-color: $swap_card_bgc
-      padding: .5rem
-      border-radius: .5rem
-      font-weight: 600
+// .swapPage
+//   position: relative
+//   height: calc( 100vh - 7rem )
+//   color: $white
+//   background-color: $main_blue
+// .container
+//   position: absolute
+//   top: 5rem
+//   left: 50%
+//   transform: translateX(-50%)
+// .titleContainer
+//   display: flex
+//   align-items: center
+//   justify-content: center
+//   margin-bottom: 1rem
+//   .title
+//     flex: 1
+//     font-weight: 600
+//     font-size: 2.4rem
+//   .iconContainer
+//     display: flex
+//     flex: 2
+//     justify-content: flex-end
+//   .icon
+//     cursor: pointer
+//     padding: .5rem
+//     border-radius: .5rem
+//     margin-left: 1rem
+//     &:hover
+//       background-color: $coin_select_block_bgc
+//   .percentageCircle
+//     width: 3rem
+//     height: 3rem
+//   .circleBg
+//     stroke: $white
+//     fill: none
+//     stroke-width: 4
+//   .popover
+//     box-shadow: none !important
+//     outline: none !important
+//   .selectTokenAddressTitle
+//     font-size: 1.2rem
+//     font-weight: 600
+//     color: $placeholder_grey
+//     margin: .5rem 0 1rem 0
+//   .selectTokenAddress
+//     opacity: .7
+//     display: flex
+//     align-items: center
+//     margin-top: .5rem
+//     .symbol
+//       width: 5rem
+//       flex-shrink: 0
+//     .address
+//       background-color: $swap_card_bgc
+//       padding: .5rem
+//       border-radius: .5rem
+//       font-weight: 600
 .swapCard
+  margin: auto
   width: 36rem
   background: linear-gradient(245.22deg,#da2eef 7.97%,#2b6aff 49.17%,#39d0d8 92.1%)
   display: flex
@@ -98,6 +99,7 @@
     .txt
       margin-right: 1rem
 .coinSelect
+  color: $white
   background-color: $coin_select_block_bgc
   border-radius: .4rem
   box-sizing: border-box
@@ -154,6 +156,7 @@
     .coinName
       margin-right: .5rem
 .slippageRow
+  color: $white
   display: flex
   align-items: center
   justify-content: space-between
@@ -181,8 +184,8 @@
   &:hover
     transition: .5s
     color: $swap_btn_border_color
-.selectWallet
-  margin-top: 2.5rem
+// .selectWallet
+//   margin-top: 2.5rem
 .disabledBtn
   border-color: $placeholder_grey
   opacity: .7
@@ -195,6 +198,7 @@
   width: 100vw
   height: 100vh
   background-color: rgba(0,0,0,.5)
+  color: $white
   position: fixed
   top: 0
   left: 0
@@ -221,14 +225,14 @@
     letter-spacing: 1px
     border-bottom: solid .1rem $white
   .list
-    height: calc(100% - 26rem)
+    height: calc(100% - 10rem)
     overflow: scroll
     padding: 0 1.5rem 2rem 1.5rem
   .tokenRow
     display: flex
     align-items: center
     padding: .8rem 1.2rem
-    font-size: 1.6rem
+    font-size: 1.2rem
     cursor: pointer
     &:hover
       background-color: $coin_select_block_bgc
@@ -255,7 +259,7 @@
   .closeIcon
     cursor: pointer
   .inputBlock
-    padding: 1rem 2.5rem 0 2.5rem
+    padding: 0.2rem 2.5rem 0 2.5rem
     .tokenListTitleRow
       font-size: 1.4rem
       font-weight: 600
@@ -264,7 +268,7 @@
       justify-content: space-between
       align-items: center
     .searchTokenInput
-      padding: 1.6rem
+      // padding: 0.5rem
       border: solid .1rem $swap_btn_border_color
       outline: none
       width: 100%
@@ -273,109 +277,92 @@
       border-radius: .5rem
       margin-top: 2rem
 
-.slippageSettingComponent
-  width: 100vw
-  height: 100vh
-  background-color: rgba(0,0,0,.5)
-  position: fixed
-  z-index: 999
-  top: 0
-  left: 0
-  .slippageSettingContainer
-    width: 50rem
-    height: 20rem
-    background-color: $token_list_bgc
-    top: 50%
-    left: 50%
-    transform: translate(-50%, -50%)
-    position: fixed
-    z-index: 9999999
-    border-radius: .5rem
-  .header
-    padding: 0 2rem
-    font-size: 1.6rem
-    height: 5rem
-    display: flex
-    align-items: center
-    justify-content: space-between
-    border-bottom: solid .1rem $white
-    font-weight: 500
-  .closeIcon
-    cursor: pointer
-  .settingSelectBlock
-    padding: 2.4rem
-  .title
-    font-weight: 700
-    font-size: 1.6rem
-    color: $placeholder_grey
-  .optionsBlock
-    display: flex
-    align-items: center
-    margin-top: 1rem
-  .optionBtn
-    display: flex
-    align-items: center
-    justify-content: center
-    width: 100%
-    background-color: $swap_card_bgc
-    color: $placeholder_grey
-    padding: 1rem 1.2rem
-    border: 0
-    border-radius: 4px
-    font-size: 1.4rem
-    font-weight: 600
-    cursor: pointer
-    flex: 1
-    margin-right: 1.5rem
-  .warning
-    margin: 1rem
-    color: $slippage_setting_warning_red
-    font-size: 1.4rem
-  .input
-    width: 100%
-    background-color: transparent
-    outline: none
-    text-align: center
-  .optionBtn.selectedSlippageRateBtn
-    background-color: $swap_btn_border_color
-  .inputBtn
-    border: solid .1rem $swap_btn_border_color
-.splTokenContainer
-  padding: 3rem 2rem 3rem 3rem
-  margin-top: 5rem
-  border-radius: 0 1rem 1rem 0
-  height: 80%
-  overflow: scroll
-  background-color: $token_list_bgc
-  display: inline-block
-  .splTokenListTitle
-    font-size: 2.2rem
-    margin-bottom: 4rem
-    font-weight: 600
-  .splTokenItem
-    margin-top: 1rem
-    font-size: 1.5rem
-.loading
-  font-size: 2rem
-  position: absolute
-  left: 50%
-  transform: translateX(-50%)
-  margin-top: 3rem
-.notifyContainer
-  position: fixed !important
-  bottom: 3rem
-  left: 2rem
-  width: auto !important
-  background-color: $token_list_bgc !important
-  border-radius: .5rem
-  padding: 2rem !important
-  font-size: 1.4rem
-  display: flex !important
-  flex-direction: column !important
-  align-items: center !important
-  .notifyTitleRow
-    display: flex
-    align-items: center
-    justify-content: center
-  .notifyDescription
-    margin-top: 2rem
+// .slippageSettingComponent
+//   width: 100vw
+//   height: 100vh
+//   background-color: rgba(0,0,0,.5)
+//   position: fixed
+//   z-index: 999
+//   top: 0
+//   left: 0
+//   .slippageSettingContainer
+//     width: 50rem
+//     height: 20rem
+//     background-color: $token_list_bgc
+//     top: 50%
+//     left: 50%
+//     transform: translate(-50%, -50%)
+//     position: fixed
+//     z-index: 9999999
+//     border-radius: .5rem
+//   .header
+//     padding: 0 2rem
+//     font-size: 1.6rem
+//     height: 5rem
+//     display: flex
+//     align-items: center
+//     justify-content: space-between
+//     border-bottom: solid .1rem $white
+//     font-weight: 500
+//   .closeIcon
+//     cursor: pointer
+//   .settingSelectBlock
+//     padding: 2.4rem
+//   .title
+//     font-weight: 700
+//     font-size: 1.6rem
+//     color: $placeholder_grey
+//   .optionsBlock
+//     display: flex
+//     align-items: center
+//     margin-top: 1rem
+//   .optionBtn
+//     display: flex
+//     align-items: center
+//     justify-content: center
+//     width: 100%
+//     background-color: $swap_card_bgc
+//     color: $placeholder_grey
+//     padding: 1rem 1.2rem
+//     border: 0
+//     border-radius: 4px
+//     font-size: 1.4rem
+//     font-weight: 600
+//     cursor: pointer
+//     flex: 1
+//     margin-right: 1.5rem
+//   .warning
+//     margin: 1rem
+//     color: $slippage_setting_warning_red
+//     font-size: 1.4rem
+//   .input
+//     width: 100%
+//     background-color: transparent
+//     outline: none
+//     text-align: center
+//   .optionBtn.selectedSlippageRateBtn
+//     background-color: $swap_btn_border_color
+//   .inputBtn
+//     border: solid .1rem $swap_btn_border_color
+// .splTokenContainer
+//   padding: 3rem 2rem 3rem 3rem
+//   margin-top: 5rem
+//   border-radius: 0 1rem 1rem 0
+//   height: 80%
+//   overflow: scroll
+//   background-color: $token_list_bgc
+//   display: inline-block
+//   .splTokenListTitle
+//     font-size: 2.2rem
+//     margin-bottom: 4rem
+//     font-weight: 600
+//   .splTokenItem
+//     margin-top: 1rem
+//     font-size: 1.5rem
+// .loading
+//   font-size: 2rem
+//   position: absolute
+//   left: 50%
+//   transform: translateX(-50%)
+//   margin-top: 3rem
+

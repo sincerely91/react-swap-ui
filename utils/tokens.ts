@@ -1,26 +1,5 @@
 import { cloneDeep } from 'lodash-es';
 
-import { TokenAmount } from './safe-math';
-
-export interface TokenInfo {
-  symbol: string
-  name: string
-
-  mintAddress: string
-  decimals: number
-  totalSupply?: TokenAmount
-
-  referrer?: string
-
-  details?: string
-  docs?: object
-  socials?: object
-
-  tokenAccountAddress?: string
-  balance?: TokenAmount
-  tags: string[]
-}
-
 /**
  * Get token use symbol
 
@@ -28,6 +7,7 @@ export interface TokenInfo {
 
  * @returns {TokenInfo | null} tokenInfo
  */
+
 export function getTokenBySymbol(symbol: string): TokenInfo | null {
   if (symbol === 'SOL') {
     return cloneDeep(NATIVE_SOL)
