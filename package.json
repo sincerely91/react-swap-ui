@@ -1,5 +1,5 @@
 {
-  "name": "project60_solana_dapp",
+  "name": "react-swap-ui",
   "private": true,
   "scripts": {
     "dev": "next dev",
